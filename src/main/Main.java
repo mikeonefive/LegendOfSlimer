@@ -20,5 +20,5 @@ public class Main {
 
         gamePanel.setupGame(); // puts objects in place
         gamePanel.startGameThread();
-    }
+    } 
 }
