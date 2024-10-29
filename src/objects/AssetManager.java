@@ -7,10 +7,9 @@ public class AssetManager {
 
     public AssetManager(GamePanel gp) {
         this.gp = gp;
-
     }
 
-    public void setObject() {
+    public void setObjects() {
         gp.objects[0] = new Key(gp);
         gp.objects[0].worldX = 23 * gp.tileSize;
         gp.objects[0].worldY = 7 * gp.tileSize;
@@ -54,6 +53,5 @@ public class AssetManager {
         gp.objects[10] = new ChestKey(gp);
         gp.objects[10].worldX = 40 * gp.tileSize;
         gp.objects[10].worldY = 41 * gp.tileSize;
-
     }
 }
