@@ -1,6 +1,7 @@
 package main;
 
 import entity.Player;
+import inputs.GamepadInput;
 import inputs.KeyboardInput;
 import objects.AssetManager;
 import objects.SuperObject;
@@ -34,6 +35,7 @@ public class GamePanel extends JPanel implements Runnable  // GamePanel is now a
     TileManager tileManager = new TileManager(this);
     //KEY HANDLER, create instance of our keyboardInput class
     KeyboardInput keyboardInput = new KeyboardInput();
+    GamepadInput gamepadInput = new GamepadInput(this);
     Sound music = new Sound();
     Sound soundEffect = new Sound();
 
@@ -48,7 +50,7 @@ public class GamePanel extends JPanel implements Runnable  // GamePanel is now a
 
     //ENTITY & OBJECT
     //create instance of player class so we can use gamepanel and keyboard input from player class
-    public Player player = new Player(this, keyboardInput);
+    public Player player = new Player(this, keyboardInput, gamepadInput);
     //objects array contains the different objects like keys, chests etc.
     public SuperObject[] objects = new SuperObject[15];
 

@@ -1,5 +1,6 @@
 package entity;
 
+import inputs.GamepadInput;
 import main.GamePanel;
 import inputs.KeyboardInput;
 import main.UtilityTool;
@@ -13,6 +14,7 @@ import java.util.Objects;
 public class Player extends Entity {
     GamePanel gp;
     KeyboardInput keyboardInput;
+    GamepadInput gamepadInput;
 
     public final int screenX;       // these indicate where we draw our player on the screen (and we move the background)
     public final int screenY;
@@ -20,9 +22,10 @@ public class Player extends Entity {
     public boolean hasChestKey = false;
 
 
-    public Player(GamePanel gp, KeyboardInput keyboardInput) {
+    public Player(GamePanel gp, KeyboardInput keyboardInput, GamepadInput gamepadInput) {
         this.gp = gp;
         this.keyboardInput = keyboardInput;
+        this.gamepadInput = gamepadInput;
 
         screenX = gp.screenWidth/2 - gp.tileSize/2;     // because screenwidth/2 would be the upper left of the char
         screenY = gp.screenHeight/2 - gp.tileSize/2;    // this puts player in the middle of screen
@@ -44,7 +47,6 @@ public class Player extends Entity {
     }
 
     public void getPlayerImage() {
-
         up1 = setup("up1");         // setup method scales image for us & returns it
         up2 = setup("up2");
         up3 = setup("up3");
@@ -79,23 +81,23 @@ public class Player extends Entity {
 
     public void update() {
 
-        if ((keyboardInput.upPressed) || (keyboardInput.downPressed)
-        || (keyboardInput.leftPressed) || (keyboardInput.rightPressed))
+        gamepadInput.handleGamepadInput();
+
+        if (keyboardInput.upPressed || keyboardInput.downPressed
+        || keyboardInput.leftPressed || keyboardInput.rightPressed
+        || gamepadInput.getIsGamepadUp() || gamepadInput.getIsGamepadDown()
+        || gamepadInput.getIsGamepadLeft() || gamepadInput.getIsGamepadRight())
         {
-            if (keyboardInput.upPressed)
-            {
+            if (keyboardInput.upPressed || gamepadInput.getIsGamepadUp()) {
                 direction = "up";
             }
-            if (keyboardInput.downPressed)
-            {
+            if (keyboardInput.downPressed || gamepadInput.getIsGamepadDown()) {
                 direction = "down";
             }
-            if (keyboardInput.leftPressed)
-            {
+            if (keyboardInput.leftPressed || gamepadInput.getIsGamepadLeft()) {
                 direction = "left";
             }
-            if (keyboardInput.rightPressed)
-            {
+            if (keyboardInput.rightPressed || gamepadInput.getIsGamepadRight()) {
                 direction = "right";
             }
 
@@ -196,7 +198,7 @@ public class Player extends Entity {
                 case "Chest":
                     if (hasChestKey) {
                         gp.ui.gameOver = true;
-                        gp.stopMusic();
+                        // gp.stopMusic();
                         gp.playSoundEffect(4);
                     } else {
                         gp.ui.setMessage("I don't have a key!");
@@ -204,7 +206,6 @@ public class Player extends Entity {
                     break;
             }
         }
-
     }
 
     public void draw(Graphics2D graphics) {

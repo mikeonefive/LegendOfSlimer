@@ -19,8 +19,7 @@ public class KeyboardInput implements KeyListener {
     {
         int keyCode = e.getKeyCode();   // returns number of key that was pressed
 
-        switch(keyCode)
-        {
+        switch(keyCode) {
             case KeyEvent.VK_W:
                 upPressed = true;
                 break;
@@ -34,7 +33,6 @@ public class KeyboardInput implements KeyListener {
                 rightPressed = true;
                 break;
         }
-
     }
 
     @Override
@@ -66,8 +64,6 @@ public class KeyboardInput implements KeyListener {
                     checkDrawingTime = false;
                 }
                 break;
-
         }
-
     }
 }

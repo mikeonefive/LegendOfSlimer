@@ -11,13 +11,11 @@ public class Hasselhoff extends SuperObject {
 
     public Hasselhoff(GamePanel gp) {
         this.gp = gp;
-
         name = "Hasselhoff";
+
         try {
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/hasselhoff.png")));
-
             utilityTool.scaleImage(image, gp.tileSize, gp.tileSize);
-
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());
         }

@@ -12,13 +12,11 @@ public class Key extends SuperObject {
 
     public Key(GamePanel gp) {
         this.gp = gp;
+        this.name = "Key";
 
-        name = "Key";
         try {
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/key.png")));
-
             utilityTool.scaleImage(image, gp.tileSize, gp.tileSize);
-
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());
         }

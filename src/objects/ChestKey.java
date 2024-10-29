@@ -11,11 +11,10 @@ public class ChestKey extends SuperObject {
 
     public ChestKey(GamePanel gp) {
         this.gp = gp;
-
         name = "ChestKey";
+
         try {
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/chestkey.png")));
-
             utilityTool.scaleImage(image, gp.tileSize, gp.tileSize);
 
         } catch (IOException e) {
