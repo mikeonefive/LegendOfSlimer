@@ -108,7 +108,7 @@ public class UI {
             g2.drawString("x " + Boolean.compare(gp.player.hasChestKey, false), symbol1X - 2, symbol1Y - 1 + gp.tileSize);
 
             // TIME
-            gameTime += (double) 1/60;  // draw method gets called 60 time/second, so we add 1/60 in every iteration
+            gameTime += (double) 1/60;  // draw method gets called 60 times/second, so we add 1/60 in every iteration
             g2.setColor(Color.black);
             g2.drawString(timeFormat.format(gameTime), gp.tileSize * 14, symbol1Y); // drop shadow
             g2.setColor(Color.white);

@@ -20,6 +20,7 @@ public class Player extends Entity {
     public final int screenY;
     public int numberOfKeysPickedUp = 0;
     public boolean hasChestKey = false;
+    int restingCounter = 0;
 
 
     public Player(GamePanel gp, KeyboardInput keyboardInput, GamepadInput gamepadInput) {
@@ -129,7 +130,6 @@ public class Player extends Entity {
 
             spriteCounter ++;
             if (spriteCounter > 10) {   // every 10 frames the player image will change
-
                 if (spriteNumber == 1) {
                     spriteNumber = 2;
                 }
@@ -140,6 +140,14 @@ public class Player extends Entity {
                     spriteNumber = 1;
                 }
                 spriteCounter = 0;
+            }
+        }
+        else { // if not pressing any keys sprite is 2 (resting position)
+            restingCounter ++;
+
+            if (restingCounter == 20) { // 20 frames time buffer for getting back to resting position
+                spriteNumber = 2;
+                restingCounter = 0;
             }
         }
     }
@@ -267,6 +275,10 @@ public class Player extends Entity {
         }
 
         graphics.drawImage(image, screenX, screenY, null);
+
+        // draw player hitbox
+        // graphics.setColor(Color.RED);
+        // graphics.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
         // screenX & screenY don't change but the background changes
     }
 }
