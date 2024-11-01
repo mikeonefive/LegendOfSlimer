@@ -20,43 +20,55 @@ public class TileManager {
 
         this.gp = gp;
 
-        tile = new Tile[10]; // create an array of 10 tiles (for the different tiles, grass, water, walls etc.)
+        tile = new Tile[50]; // create an array of 50 tiles (for the different tiles, grass, water, walls etc.)
 
         // mapTileNumber array to store the infos from .txt maps
         mapTileNumber = new int[gp.maxWorldColumn][gp.maxWorldRow];
 
         getTileImage();
-        loadMap("/maps/world01.txt");
+        loadMap("/maps/worldV2.txt");
     }
 
     public void getTileImage() {
 
-            setup(0, "grass", false);
-            setup(1, "wall", true);
-            setup(2, "water", true);
-            setup(3, "dirt", false);
-            setup(4, "tree", true);
-            setup(5, "sand", false);
-            setup(6, "deadtree", true);
-            setup(7, "stump", true);
+        // we don't use 0-9, we start with index 10 (because of the map.txt indexes)
+        for (int i = 0; i <= 9; i++) {
+            setup(i, "grass00", false);
+        }
 
+        // grass
+        setup(10, "grass00", false);
+        setup(11, "grass01", false);
+
+        // water
+        for (int i = 12; i <= 25; i++) {
+            String waterFileName = String.format("water%02d", i - 12);
+            setup(i, waterFileName, true);
+        }
+
+        // road
+        for (int i = 26; i <= 38; i++) {
+            String roadFileName = String.format("road%02d", i - 26);
+            setup(i, roadFileName, false);
+        }
+
+        setup(39, "earth", false);
+        setup(40, "wall", true);
+        setup(41, "tree", true);
     }
 
-    public void setup(int index, String fileName, boolean collision) {
+    public void setup(int index, String fileName, boolean isColliding) {
         UtilityTool utilityTool = new UtilityTool();
 
         try {
             tile[index] = new Tile();
-            tile[index].image = ImageIO.read(Objects.requireNonNull
-                    (getClass().getResourceAsStream("/tiles/" + fileName + ".png")));
+            tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/" + fileName + ".png"));
             tile[index].image = utilityTool.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
-            tile[index].collision = collision;
+            tile[index].isColliding = isColliding;
 
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());
         }
-
-
     }
 
     public void loadMap(String filePathMap) {
@@ -110,10 +122,8 @@ public class TileManager {
                     worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
                     worldY - gp.tileSize < gp.player.worldY + gp.player.screenY)
                 {
-
                     graphics.drawImage(tile[0].image, screenX, screenY, null); // background tile is 0 (grass)
                     graphics.drawImage(tile[tileNumber].image, screenX, screenY, null);
-
                 }
             }
         }

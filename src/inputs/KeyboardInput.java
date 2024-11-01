@@ -60,7 +60,7 @@ public class KeyboardInput implements KeyListener {
                 if (checkDrawingTime == false) {
                     checkDrawingTime = true;
                 }
-                else if (checkDrawingTime) {
+                else {
                     checkDrawingTime = false;
                 }
                 break;
