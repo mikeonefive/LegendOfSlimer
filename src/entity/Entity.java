@@ -35,7 +35,6 @@ public abstract class Entity {
     }
 
     public void setDirection() {
-        
     }
 
     public void update() {
