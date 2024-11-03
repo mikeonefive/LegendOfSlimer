@@ -1,35 +1,33 @@
 package entity;
 
+import constants.Constants;
 import inputs.GamepadInput;
 import main.GamePanel;
 import inputs.KeyboardInput;
-import main.UtilityTool;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
+
 
 public class Player extends Entity {
-    GamePanel gp;
+
     KeyboardInput keyboardInput;
     GamepadInput gamepadInput;
 
     public final int screenX;       // these indicate where we draw our player on the screen (and we move the background)
     public final int screenY;
-    public int numberOfKeysPickedUp = 0;
-    public boolean hasChestKey = false;
+
     int restingCounter = 0;
 
 
-    public Player(GamePanel gp, KeyboardInput keyboardInput, GamepadInput gamepadInput) {
-        this.gp = gp;
+    public Player(GamePanel gamePanel, KeyboardInput keyboardInput, GamepadInput gamepadInput) {
+        super(gamePanel);  // call constructor of superclass
+
         this.keyboardInput = keyboardInput;
         this.gamepadInput = gamepadInput;
 
-        screenX = gp.screenWidth/2 - gp.tileSize/2;     // because screenwidth/2 would be the upper left of the char
-        screenY = gp.screenHeight/2 - gp.tileSize/2;    // this puts player in the middle of screen
+        screenX = gamePanel.screenWidth/2 - gamePanel.tileSize/2;     // because screenwidth/2 would be the upper left of the char
+        screenY = gamePanel.screenHeight/2 - gamePanel.tileSize/2;    // this puts player in the middle of screen
 
         solidArea = new Rectangle(8, 20, 25, 30); // collision area for player
 
@@ -41,43 +39,28 @@ public class Player extends Entity {
     }
 
     public void setDefaultValues() {
-        worldX = gp.tileSize * 23;       // player's position on the world map (map is bigger than our window)
-        worldY = gp.tileSize * 21;       // tilesize * 20 because the coordinates in our maps are all tiles (25px)
+        worldX = gamePanel.tileSize * 23;       // player's position on the world map (map is bigger than our window)
+        worldY = gamePanel.tileSize * 21;       // tilesize * 20 because the coordinates in our maps are all tiles (25px)
         speed = 4;                       // and so we can use the coordinates from our map
         direction = "rest";
     }
 
     public void getPlayerImage() {
-        up1 = setup("up1");         // setup method scales image for us & returns it
-        up2 = setup("up2");
-        up3 = setup("up3");
+        up1 = setup("/player/up1");         // setup method scales image for us & returns it
+        up2 = setup("/player/up2");
+        up3 = setup("/player/up3");
 
-        down1 = setup("down1");
-        down2 = setup("down2");
-        down3 = setup("down3");
+        down1 = setup("/player/down1");
+        down2 = setup("/player/down2");
+        down3 = setup("/player/down3");
 
-        left1 = setup("left1");
-        left2 = setup("left2");
-        left3 = setup("left3");
+        left1 = setup("/player/left1");
+        left2 = setup("/player/left2");
+        left3 = setup("/player/left3");
 
-        right1 = setup("right1");
-        right2 = setup("right2");
-        right3 = setup("right3");
-    }
-
-    public BufferedImage setup(String fileName) {
-        UtilityTool utilityTool = new UtilityTool();
-        BufferedImage image = null;
-
-        try {
-            image = ImageIO.read(Objects.requireNonNull
-                    (getClass().getResourceAsStream("/player/" + fileName + ".png")));
-            image = utilityTool.scaleImage(image, gp.tileSize, gp.tileSize);
-
-        } catch (IOException e) {
-            System.err.println("An error occurred: " + e.getMessage());
-        }
-        return image;
+        right1 = setup("/player/right1");
+        right2 = setup("/player/right2");
+        right3 = setup("/player/right3");
     }
 
     public void update() {
@@ -104,11 +87,15 @@ public class Player extends Entity {
 
             // CHECK TILE COLLISIONS (if player runs into solid tile)
             isColliding = false;
-            gp.collisionChecker.checkTile(this);
+            gamePanel.collisionChecker.checkTile(this);
 
             // CHECK OBJECT COLLISIONS (if player runs into an object like a key or door)
-            int objectIndex = gp.collisionChecker.checkObject(this, true);
+            int objectIndex = gamePanel.collisionChecker.checkObject(this, true);
             pickupObject(objectIndex);
+
+            // CHECK COLLISION WITH NPCs
+            int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
+            interactWithNpc(npcIndex);
 
             // if isColliding is still false, the player can move in that direction
             if (!isColliding) {
@@ -152,67 +139,15 @@ public class Player extends Entity {
         }
     }
 
+    public void interactWithNpc(int npcIndex) {
+        if (npcIndex != Constants.EMPTY_AREA) {                 // if player collides with NPC
+            System.out.println("Slimer: Collision with NPC!");
+        }
+    }
+
     public void pickupObject(int index) {
 
-        if (index != 999) {                 // if player didn't touch any object 999 is not used in our objects array
-            String objectName = gp.objects[index].name;
-
-            switch (objectName) {
-                case "Key":
-                    gp.playSoundEffect(1);
-                    numberOfKeysPickedUp += 1;
-                    gp.objects[index] = null;   // deletes object we just touched -> we picked it up
-                    gp.ui.setMessage("I found a key!");
-                    break;
-
-                case "Gate":
-                    if (numberOfKeysPickedUp > 0) {
-                        gp.playSoundEffect(3);
-                        gp.objects[index] = null;
-                        numberOfKeysPickedUp -= 1;
-                    } else {
-                        gp.ui.setMessage("I don't have a key!");
-                    }
-                    break;
-
-                case "Skull":
-                    gp.playSoundEffect(2);
-                    speed += 2;
-                    gp.objects[index] = null;
-                    gp.ui.setMessage("Yay! Speed!");
-                    break;
-
-                case "Plant":
-                    gp.playSoundEffect(5);
-                    speed -= 3;
-                    gp.objects[index] = null;
-                    gp.ui.setMessage("Oh no! Slowing down!");
-                    break;
-
-                case "Hasselhoff":
-                    gp.playSoundEffect(2);
-                    speed += 3;
-                    gp.objects[index] = null;
-                    gp.ui.setMessage("I found Hasselhoff!");
-                    break;
-
-                case "ChestKey":
-                    gp.playSoundEffect(1);
-                    hasChestKey = true;
-                    gp.objects[index] = null;
-                    gp.ui.setMessage("I found a key!");
-                    break;
-
-                case "Chest":
-                    if (hasChestKey) {
-                        gp.ui.gameOver = true;
-                        // gp.stopMusic();
-                        gp.playSoundEffect(4);
-                    } else {
-                        gp.ui.setMessage("I don't have a key!");
-                    }
-                    break;
-            }
+        if (index != Constants.EMPTY_AREA) {                 // if player didn't touch any object 999 is not used in our objects array
         }
     }
 

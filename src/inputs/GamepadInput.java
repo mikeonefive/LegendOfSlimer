@@ -2,15 +2,18 @@ package inputs;
 
 import com.studiohartman.jamepad.ControllerManager;
 import com.studiohartman.jamepad.ControllerState;
+import main.GamePanel;
 
 
 public class GamepadInput {
+    private final GamePanel gamePanel;
     private final ControllerManager controllers;
     private boolean isGamepadLeft, isGamepadRight, isGamepadUp, isGamepadDown;
 
-    public GamepadInput() {
+    public GamepadInput(GamePanel gamePanel) {
         controllers = new ControllerManager();
         controllers.initSDLGamepad();
+        this.gamePanel = gamePanel;
     }
 
 
@@ -19,6 +22,8 @@ public class GamepadInput {
         resetDirectionBools();
 
         ControllerState button = this.getButtonPressed();
+        // System.out.println("Start button state: " + button.start);
+
         // handle directions
         if (button.dpadUp || button.leftStickY > 0.5)
             isGamepadUp = true;
@@ -29,6 +34,14 @@ public class GamepadInput {
             isGamepadRight = true;
         if (button.dpadLeft || button.leftStickX < -0.5)
             isGamepadLeft = true;
+
+        // pause & unpause game
+        if (button.start) {
+            if (gamePanel.gameState == gamePanel.playGame)
+                gamePanel.gameState = gamePanel.pauseGame;
+            else if (gamePanel.gameState == gamePanel.pauseGame)
+                gamePanel.gameState = gamePanel.playGame;
+        }
     }
 
     private void resetDirectionBools() {
