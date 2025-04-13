@@ -16,6 +16,7 @@ public class Pink extends Entity {
         solidArea = new Rectangle(0, 0, 48, 48);
 
         getImage();
+        setDialogue();
     }
 
     public void getImage() {
@@ -35,6 +36,15 @@ public class Pink extends Entity {
         right2 = setup("/npc/right2");
         right3 = setup("/npc/right3");
     }
+
+
+    public void setDialogue() {
+        dialogueLines[0] = "Hi dude!";
+        dialogueLines[1] = "Why are you here? You looking for the treasure?";
+        dialogueLines[2] = "I came to this island many years ago because I also \nwanted to find it but I gave up. It's nowhere to be found. \nI think it's just a rumor.";
+        dialogueLines[3] = "Anyways, good luck to you, dude.";
+    }
+
 
     @Override
     public void setDirection() {
@@ -57,5 +67,10 @@ public class Pink extends Entity {
 
             directionLockCounter = 0;
         }
+    }
+
+    public void speak() {
+        // here it can also speak character-specific stuff
+        super.speak();
     }
 }

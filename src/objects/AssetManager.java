@@ -15,8 +15,8 @@ public class AssetManager {
     }
 
     public void setNpc() {
-        gp.npc[0] = new Pink(gp);
-        gp.npc[0].worldX = gp.tileSize * 21;
-        gp.npc[0].worldY = gp.tileSize * 21;
+        gp.npcs[0] = new Pink(gp);
+        gp.npcs[0].worldX = gp.tileSize * 21;
+        gp.npcs[0].worldY = gp.tileSize * 21;
     }
 }

@@ -26,6 +26,7 @@ public class KeyboardInput implements KeyListener {
     {
         int keyCode = e.getKeyCode();   // returns number of key that was pressed
 
+        // PLAY GAME STATE
         switch(keyCode) {
             case KeyEvent.VK_W:
                 upPressed = true;
@@ -39,16 +40,20 @@ public class KeyboardInput implements KeyListener {
             case KeyEvent.VK_D:
                 rightPressed = true;
                 break;
+        }
 
-            // pause ESC
-            case KeyEvent.VK_ESCAPE:
-                if (gamePanel.gameState == gamePanel.playGame)
-                    gamePanel.gameState = gamePanel.pauseGame;
-                else if (gamePanel.gameState == gamePanel.pauseGame)
-                    gamePanel.gameState = gamePanel.playGame;
-                break;
+        // PAUSE STATE
+        if (gamePanel.gameState == gamePanel.pauseGame && keyCode == KeyEvent.VK_ESCAPE)
+            gamePanel.gameState = gamePanel.playGame;
+        else if (gamePanel.gameState == gamePanel.playGame && keyCode == KeyEvent.VK_ESCAPE)
+            gamePanel.gameState = gamePanel.pauseGame;
+
+        // DIALOGUE STATE
+        if (gamePanel.gameState == gamePanel.dialogueState && keyCode == KeyEvent.VK_ENTER) {
+            gamePanel.gameState = gamePanel.playGame;
         }
     }
+
 
     @Override
     public void keyReleased(KeyEvent e)

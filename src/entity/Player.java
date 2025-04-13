@@ -94,7 +94,7 @@ public class Player extends Entity {
             pickupObject(objectIndex);
 
             // CHECK COLLISION WITH NPCs
-            int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npc);
+            int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npcs);
             interactWithNpc(npcIndex);
 
             // if isColliding is still false, the player can move in that direction
@@ -141,7 +141,8 @@ public class Player extends Entity {
 
     public void interactWithNpc(int npcIndex) {
         if (npcIndex != Constants.EMPTY_AREA) {                 // if player collides with NPC
-            System.out.println("Slimer: Collision with NPC!");
+            gamePanel.gameState = gamePanel.dialogueState;
+            gamePanel.npcs[npcIndex].speak();
         }
     }
 

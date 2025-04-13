@@ -35,8 +35,8 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
     TileManager tileManager = new TileManager(this);
 
     //KEY HANDLER, create instance of our keyboardInput class
-    KeyboardInput keyboardInput = new KeyboardInput(this);
-    GamepadInput gamepadInput = new GamepadInput(this);
+    public KeyboardInput keyboardInput = new KeyboardInput(this);
+    public GamepadInput gamepadInput = new GamepadInput(this);
 
     Sound music = new Sound();
     Sound soundEffect = new Sound();
@@ -55,12 +55,14 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
     public Player player = new Player(this, keyboardInput, gamepadInput);
     //objects array contains the different objects like keys, chests etc.
     public SuperObject[] objects = new SuperObject[15];
-    public Entity[] npc = new Entity[10];
+    public Entity[] npcs = new Entity[10];
 
     //GAME STATES
     public int gameState;
     public final int playGame = 1;
     public final int pauseGame = 2;
+    public final int dialogueState = 3;
+
 
     public GamePanel() {
         // set size of game panel
@@ -112,11 +114,14 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
     }
 
     public void update() {
+
+        gamepadInput.handleGamepadInput();
+
         if (gameState == playGame)
             player.update();
 
         // NPCs
-        for (Entity entity : npc) {
+        for (Entity entity : npcs) {
             if (entity != null)
                 entity.update();
         }
@@ -136,7 +141,6 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
             startTimeDrawing = System.nanoTime();
         }
 
-
         //TILES
         tileManager.draw(graphics);
 
@@ -147,8 +151,8 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
             }
         }
 
-        //NPC
-        for (Entity entity : npc) {
+        //NPCs
+        for (Entity entity : npcs) {
             if (entity != null) {
                 entity.draw(graphics);
             }

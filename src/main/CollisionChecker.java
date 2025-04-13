@@ -32,8 +32,7 @@ public class CollisionChecker {
                 tileNumber2 = gp.tileManager.mapTileNumber[entityRightColumn][entityTopRow];
 
                 // check if the tile we hit is a solid one
-                if (gp.tileManager.tile[tileNumber1].isColliding || gp.tileManager.tile[tileNumber2].isColliding)
-                {
+                if (gp.tileManager.tile[tileNumber1].isColliding || gp.tileManager.tile[tileNumber2].isColliding) {
                     entity.isColliding = true;
                 }
                 break;
@@ -43,8 +42,7 @@ public class CollisionChecker {
                 tileNumber1 = gp.tileManager.mapTileNumber[entityLeftColumn][entityBottomRow];
                 tileNumber2 = gp.tileManager.mapTileNumber[entityRightColumn][entityBottomRow];
 
-                if (gp.tileManager.tile[tileNumber1].isColliding || gp.tileManager.tile[tileNumber2].isColliding)
-                {
+                if (gp.tileManager.tile[tileNumber1].isColliding || gp.tileManager.tile[tileNumber2].isColliding) {
                     entity.isColliding = true;
                 }
                 break;
@@ -54,8 +52,7 @@ public class CollisionChecker {
                 tileNumber1 = gp.tileManager.mapTileNumber[entityLeftColumn][entityTopRow];
                 tileNumber2 = gp.tileManager.mapTileNumber[entityLeftColumn][entityBottomRow];
 
-                if (gp.tileManager.tile[tileNumber1].isColliding || gp.tileManager.tile[tileNumber2].isColliding)
-                {
+                if (gp.tileManager.tile[tileNumber1].isColliding || gp.tileManager.tile[tileNumber2].isColliding) {
                     entity.isColliding = true;
                 }
                 break;

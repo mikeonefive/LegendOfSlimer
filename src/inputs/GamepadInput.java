@@ -9,6 +9,7 @@ public class GamepadInput {
     private final GamePanel gamePanel;
     private final ControllerManager controllers;
     private boolean isGamepadLeft, isGamepadRight, isGamepadUp, isGamepadDown;
+    public boolean isApressed;
 
     public GamepadInput(GamePanel gamePanel) {
         controllers = new ControllerManager();
@@ -35,12 +36,20 @@ public class GamepadInput {
         if (button.dpadLeft || button.leftStickX < -0.5)
             isGamepadLeft = true;
 
+        // talking to NPC
+        if (button.a)
+            isApressed = true;
+
         // pause & unpause game
-        if (button.start) {
-            if (gamePanel.gameState == gamePanel.playGame)
-                gamePanel.gameState = gamePanel.pauseGame;
-            else if (gamePanel.gameState == gamePanel.pauseGame)
-                gamePanel.gameState = gamePanel.playGame;
+        if (button.start && gamePanel.gameState == gamePanel.playGame)
+            gamePanel.gameState = gamePanel.pauseGame;
+        else if (button.start && gamePanel.gameState == gamePanel.pauseGame)
+            gamePanel.gameState = gamePanel.playGame;
+
+
+        // DIALOGUE STATE
+        if (gamePanel.gameState == gamePanel.dialogueState && button.a) {
+            gamePanel.gameState = gamePanel.playGame;
         }
     }
 

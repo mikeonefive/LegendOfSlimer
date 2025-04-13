@@ -30,11 +30,38 @@ public abstract class Entity {
 
     public int directionLockCounter = 0;
 
+    String[] dialogueLines = new String[20];
+    int lineIndex = 0;
+
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
 
     public void setDirection() {
+    }
+
+    public void speak() {
+        if (dialogueLines[lineIndex] == null)
+            lineIndex = 0;
+
+        gamePanel.ui.currentDialogueLine = dialogueLines[lineIndex];
+        lineIndex++;
+
+        // make NPC face player when talking
+        switch(gamePanel.player.direction) {
+            case "up":
+                direction = "down";
+                break;
+            case "down":
+                direction = "up";
+                break;
+            case "left":
+                direction = "right";
+                break;
+            case "right":
+                direction = "left";
+                break;
+        }
     }
 
     public void update() {
