@@ -28,46 +28,59 @@ public class CollisionChecker {
             case "up":
                 // this predicts where the player will be that's why we use - speed (moving up)
                 entityTopRow = (entityTopWorldY - entity.speed) / gp.tileSize;
-                tileNumber1 = gp.tileManager.mapTileNumber[entityLeftColumn][entityTopRow];
-                tileNumber2 = gp.tileManager.mapTileNumber[entityRightColumn][entityTopRow];
 
                 // check if the tile we hit is a solid one
-                if (gp.tileManager.tile[tileNumber1].isColliding || gp.tileManager.tile[tileNumber2].isColliding) {
+                if (isTileColliding(entityLeftColumn, entityTopRow, entityRightColumn, entityTopRow)) {
                     entity.isColliding = true;
                 }
                 break;
 
             case "down":
                 entityBottomRow = (entityBottomWorldY + entity.speed) / gp.tileSize;
-                tileNumber1 = gp.tileManager.mapTileNumber[entityLeftColumn][entityBottomRow];
-                tileNumber2 = gp.tileManager.mapTileNumber[entityRightColumn][entityBottomRow];
-
-                if (gp.tileManager.tile[tileNumber1].isColliding || gp.tileManager.tile[tileNumber2].isColliding) {
+                if (isTileColliding(entityLeftColumn, entityBottomRow, entityRightColumn, entityBottomRow)) {
                     entity.isColliding = true;
                 }
                 break;
 
             case "left":
                 entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.tileSize;
-                tileNumber1 = gp.tileManager.mapTileNumber[entityLeftColumn][entityTopRow];
-                tileNumber2 = gp.tileManager.mapTileNumber[entityLeftColumn][entityBottomRow];
-
-                if (gp.tileManager.tile[tileNumber1].isColliding || gp.tileManager.tile[tileNumber2].isColliding) {
+                if (isTileColliding(entityLeftColumn, entityTopRow, entityLeftColumn, entityBottomRow)) {
                     entity.isColliding = true;
                 }
                 break;
 
             case "right":
                 entityRightColumn = (entityRightWorldX + entity.speed) / gp.tileSize;
-                tileNumber1 = gp.tileManager.mapTileNumber[entityRightColumn][entityTopRow];
-                tileNumber2 = gp.tileManager.mapTileNumber[entityRightColumn][entityBottomRow];
-
-                if(gp.tileManager.tile[tileNumber1].isColliding || gp.tileManager.tile[tileNumber2].isColliding) {
+                if (isTileColliding(entityRightColumn, entityTopRow, entityRightColumn, entityBottomRow)) {
                     entity.isColliding = true;
                 }
                 break;
         }
     }
+
+
+    private boolean isTileColliding(int col1, int row1, int col2, int row2) {
+        // Check boundaries first
+        if (col1 >= 0 && col1 < gp.tileManager.mapTileNumber.length &&
+                col2 >= 0 && col2 < gp.tileManager.mapTileNumber.length &&
+                row1 >= 0 && row1 < gp.tileManager.mapTileNumber[0].length &&
+                row2 >= 0 && row2 < gp.tileManager.mapTileNumber[0].length) {
+
+            int tileNumber1 = gp.tileManager.mapTileNumber[col1][row1];
+            int tileNumber2 = gp.tileManager.mapTileNumber[col2][row2];
+
+            return gp.tileManager.tile[tileNumber1].isColliding ||
+                    gp.tileManager.tile[tileNumber2].isColliding;
+        }
+
+        // If out of bounds, you can choose:
+        // Option 1: Treat as collision
+        return true;
+
+        // Option 2: Treat as safe
+        // return false;
+    }
+
 
     // check if player collides with any object and if so, we return the object's index
     public int checkObject(Entity entity, boolean isEntityPlayer) {

@@ -89,8 +89,8 @@ public abstract class Entity {
                     worldX += speed;
                     break;
             }
-        } else if (isCollidingWithPlayer)
-            System.out.println("Entity: Colliding with player!");
+        } // else if (isCollidingWithPlayer)
+            // System.out.println("Entity: Colliding with player!");
 
         spriteCounter ++;
         if (spriteCounter > 10) {   // every 10 frames the player image will change
@@ -191,6 +191,9 @@ public abstract class Entity {
             }
 
             graphics.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
+            // draw entity hitbox
+            graphics.setColor(Color.RED);
+            graphics.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
         }
     }
 }

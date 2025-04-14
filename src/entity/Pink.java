@@ -41,7 +41,7 @@ public class Pink extends Entity {
     public void setDialogue() {
         dialogueLines[0] = "Hi dude!";
         dialogueLines[1] = "Why are you here? You looking for the treasure?";
-        dialogueLines[2] = "I came to this island many years ago because I also \nwanted to find it but I gave up. It's nowhere to be found. \nI think it's just a rumor.";
+        dialogueLines[2] = "I came to this island many years ago because I also \nwanted to find it but I gave up. It's nowhere \nto be found. I think it's just a rumor.";
         dialogueLines[3] = "Anyways, good luck to you, dude.";
     }
 

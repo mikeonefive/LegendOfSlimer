@@ -213,8 +213,8 @@ public class Player extends Entity {
         graphics.drawImage(image, screenX, screenY, null);
 
         // draw player hitbox
-        // graphics.setColor(Color.RED);
-        // graphics.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+        graphics.setColor(Color.RED);
+        graphics.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
         // screenX & screenY don't change but the background changes
     }
 }
