@@ -1,5 +1,6 @@
 package main;
 
+import entity.Entity;
 import entity.Player;
 import inputs.GamepadInput;
 import inputs.KeyboardInput;
@@ -34,8 +35,8 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
     TileManager tileManager = new TileManager(this);
 
     //KEY HANDLER, create instance of our keyboardInput class
-    KeyboardInput keyboardInput = new KeyboardInput();
-    GamepadInput gamepadInput = new GamepadInput();
+    public KeyboardInput keyboardInput = new KeyboardInput(this);
+    public GamepadInput gamepadInput = new GamepadInput(this);
 
     Sound music = new Sound();
     Sound soundEffect = new Sound();
@@ -49,11 +50,18 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
     //time (start a thread and keep it running)
     Thread gameThread;
 
-    //ENTITY & OBJECT
+    //PLAYER ENTITY & OBJECTS
     //create instance of player class so we can use gamepanel and keyboard input from player class
     public Player player = new Player(this, keyboardInput, gamepadInput);
     //objects array contains the different objects like keys, chests etc.
     public SuperObject[] objects = new SuperObject[15];
+    public Entity[] npcs = new Entity[10];
+
+    //GAME STATES
+    public int gameState;
+    public final int playGame = 1;
+    public final int pauseGame = 2;
+    public final int dialogueState = 3;
 
 
     public GamePanel() {
@@ -67,7 +75,9 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
 
     public void setupGame() {
         assetManager.setObjects();
+        assetManager.setNpc();
         // playMusic(0); // 0 is the index of our background music (see Sound Class)
+        gameState = playGame;
     }
 
     public void startGameThread() {
@@ -104,19 +114,32 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
     }
 
     public void update() {
-        player.update();
+
+        gamepadInput.handleGamepadInput();
+
+        if (gameState == playGame)
+            player.update();
+
+        // NPCs
+        for (Entity entity : npcs) {
+            if (entity != null)
+                entity.update();
+        }
+
+        if (gameState == pauseGame) {
+            // do the updates for paused game
+        }
     }
 
     public void paintComponent(Graphics g) {    // paintComponent is a method that's already there in Java
         super.paintComponent(g);
         Graphics2D graphics = (Graphics2D)g;
 
-        //DEBUG pt1
+        //DEBUG pt1 how long it takes to draw stuff
         long startTimeDrawing = 0;
         if (KeyboardInput.checkDrawingTime) {
             startTimeDrawing = System.nanoTime();
         }
-
 
         //TILES
         tileManager.draw(graphics);
@@ -125,6 +148,13 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
         for (SuperObject object : objects) {
             if (object != null) {
                 object.draw(graphics, this);
+            }
+        }
+
+        //NPCs
+        for (Entity entity : npcs) {
+            if (entity != null) {
+                entity.draw(graphics);
             }
         }
 
@@ -137,10 +167,11 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
         //DEBUG pt2
         if (KeyboardInput.checkDrawingTime) {
             long endTimeDrawing = System.nanoTime();
-            long timePassed = endTimeDrawing - startTimeDrawing;
-            graphics.setColor(Color.white);
+            double timePassed = endTimeDrawing - startTimeDrawing;
+            timePassed = timePassed / 1_000_000_000; // convert to seconds
+            System.out.println("Drawing time: " + timePassed);
+            graphics.setColor(Color.WHITE);
             graphics.drawString("Drawing time: " + timePassed, 10, 400);
-            System.out.println(timePassed);
         }
         graphics.dispose();
     }

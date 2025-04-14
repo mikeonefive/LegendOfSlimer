@@ -1,43 +1,39 @@
 package main;
 
-import objects.ChestKey;
-import objects.Key;
-import objects.SpeechBubble;
+import inputs.GamepadInput;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 
 public class UI {
 
     GamePanel gp;
+    Graphics2D graphics;
     Font arial20, arial40;
-
-    BufferedImage keySymbol;
-    BufferedImage chestKeySymbol;
-    BufferedImage speechBubble;
+    Font pixelFont;
 
     public boolean showMessage = false;
     public String message = "";
     int messageTimer = 0;
     public boolean gameOver = false;
 
-    double gameTime;
-    DecimalFormat timeFormat = new DecimalFormat("#0.00");
+    public String currentDialogueLine = "";
+
 
     public UI(GamePanel gp) {
         this.gp = gp;
-        arial20 = new Font("Arial", Font.BOLD, 20);
-        arial40 = new Font("Arial", Font.BOLD, 40);
+        // arial20 = new Font("Arial", Font.BOLD, 20);
+        // arial40 = new Font("Arial", Font.BOLD, 40);
 
-        Key key = new Key(gp); // just create new key instance and access its image
-        keySymbol = key.image;
+        try {
+            InputStream fontFile = getClass().getResourceAsStream("/fonts/MaruMonica.ttf");
+            pixelFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+        } catch (FontFormatException | IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        ChestKey chestKey = new ChestKey(gp);
-        chestKeySymbol = chestKey.image;
-
-        SpeechBubble speechBubble1 = new SpeechBubble();
-        speechBubble = speechBubble1.image;
     }
 
     public void setMessage(String text) {
@@ -45,88 +41,81 @@ public class UI {
         showMessage = true;
     }
 
-    public void draw (Graphics2D g2) {
+    public void draw (Graphics2D graphics) {
+        this.graphics = graphics;
+        // graphics.setFont(arial40);
+        graphics.setColor(Color.WHITE);
 
-        // DRAW GAME OVER SCREEN
-        if (gameOver) {
-
-            String text;
-            int textLength;
-            int x, y;
-
-            g2.setFont(arial20);
-            // draw speech bubble and let player say something
-            g2.setColor(Color.black);
-            text = "I found me some treasure!";
-            g2.drawImage(speechBubble, gp.player.screenX / 2, gp.player.screenY / 2,
-                    (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth() + 25, gp.tileSize * 2, null);
-            g2.setFont(g2.getFont().deriveFont(16F)); // casting to float with F
-            g2.drawString(text, gp.player.screenX - gp.tileSize * 3, gp.player.screenY - 90);
-
-            // End message
-            g2.setFont(arial40);
-            text = "Game Over";
-            textLength = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth(); // returns length of the text
-            x = (gp.screenWidth / 2) - (textLength / 2);
-            y = gp.screenHeight / 2 + gp.tileSize;
-
-            g2.setColor(Color.black); // drop shadow text
-            g2.drawString(text, x + 3, y + 3);
-
-            g2.setColor(Color.white); // original text
-            g2.drawString(text, x, y);
-
-            g2.setFont(arial20);
-            text = "Your time: " + timeFormat.format(gameTime) + " seconds";
-            textLength = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-            x = (gp.screenWidth / 2) - (textLength / 2);
-            y = (gp.screenHeight / 2) + (gp.tileSize * 2);
-
-            g2.setColor(Color.black); // drop shadow text
-            g2.drawString(text, x + 3, y + 3);
-
-            g2.setColor(Color.white); // original text
-            g2.drawString(text, x, y);
-
-
-            gp.gameThread = null; // stop the game thread
-
-        } else {
-
-            g2.setFont(arial20);
-
-            g2.drawImage(keySymbol, gp.tileSize / 2, gp.tileSize / 2, gp.tileSize, gp.tileSize, null);
-            g2.drawImage(chestKeySymbol, gp.tileSize / 2, gp.tileSize / 2 + gp.tileSize, gp.tileSize, gp.tileSize, null);
-
-            g2.setColor(Color.black); // this is the drop shadow of the text
-            int symbol1X = 76, symbol1Y = 56;
-            g2.drawString("x " + gp.player.numberOfKeysPickedUp, symbol1X, symbol1Y);
-            g2.drawString("x " + Boolean.compare(gp.player.hasChestKey, false), symbol1X, symbol1Y + gp.tileSize);
-
-            g2.setColor(Color.white);
-            g2.drawString("x " + gp.player.numberOfKeysPickedUp, symbol1X - 2, symbol1Y - 1);
-            g2.drawString("x " + Boolean.compare(gp.player.hasChestKey, false), symbol1X - 2, symbol1Y - 1 + gp.tileSize);
-
-            // TIME
-            gameTime += (double) 1/60;  // draw method gets called 60 time/second, so we add 1/60 in every iteration
-            g2.setColor(Color.black);
-            g2.drawString(timeFormat.format(gameTime), gp.tileSize * 14, symbol1Y); // drop shadow
-            g2.setColor(Color.white);
-            g2.drawString(timeFormat.format(gameTime), gp.tileSize * 14 - 2, symbol1Y - 1);
-
-            // draw message
-            if (showMessage) {
-                g2.setColor(Color.black);
-                g2.drawImage(speechBubble, gp.player.screenX / 2 - 10, gp.player.screenY / 2, message.length() * 15, gp.tileSize * 2, null);
-                g2.setFont(g2.getFont().deriveFont(16F)); // casting to float with F
-                g2.drawString(message, gp.player.screenX - gp.tileSize * 3, gp.player.screenY - 90);
-
-                messageTimer++; // every time draw is called we increase that variable
-                if (messageTimer > 120) { // 120 (60 fps) = text disappears after 2 secs
-                    messageTimer = 0;
-                    showMessage = false;
-                }
-            }
+        // PLAY GAME STATE
+        if (gp.gameState == gp.playGame) {
+            // draw playGame graphics
         }
+
+        // PAUSE GAME STATE
+        if (gp.gameState == gp.pauseGame) {
+            drawPauseScreen();
+        }
+
+        // DIALOGUE STATE
+        if (gp.gameState == gp.dialogueState) {
+            drawDialogueScreen();
+        }
+    }
+
+
+    public void drawDialogueScreen() {
+        // WINDOW
+        int x = gp.tileSize * 2;
+        int y = gp.tileSize / 2;
+        int dialogueBoxWidth = gp.screenWidth - (gp.tileSize * 4);
+        int dialogueBoxHeight = gp.tileSize * 4;
+
+        drawDialogueWindow(x, y, dialogueBoxWidth, dialogueBoxHeight);
+
+        // DIALOGUE LINE
+        graphics.setFont(pixelFont.deriveFont(Font.BOLD, 25));
+        x += gp.tileSize;
+        y += gp.tileSize;
+
+        for (String line : currentDialogueLine.split("\n")) {
+            graphics.drawString(line, x, y);
+            y += 40;
+        }
+    }
+
+
+    public void drawDialogueWindow(int x, int y, int width, int height) {
+        Color color = new Color(255, 255, 255, 200);
+        graphics.setColor(color);
+        graphics.fillRoundRect(x, y, width, height, 35, 35);
+
+        color = new Color(0, 0, 0);
+        graphics.setColor(color);
+        graphics.setStroke(new BasicStroke(4));
+        graphics.drawRoundRect(x + 4, y + 4, width - 10, height - 10, 25, 25);
+    }
+
+
+    public void drawPauseScreen() {
+        Color shadowColor = Color.BLACK;
+        Color textColor = Color.WHITE;
+        int shadowOffset = 3;
+
+        String message = "PAUSED";
+
+        int x = getXForCenteredText(message);
+        int y = gp.screenHeight / 2;
+
+        graphics.setColor(shadowColor);
+        graphics.drawString(message, x + shadowOffset, y + shadowOffset);
+        graphics.setColor(textColor);
+        graphics.drawString(message, x, y);
+    }
+
+
+    public int getXForCenteredText (String text) {
+        int messageLength = (int)graphics.getFontMetrics().getStringBounds(text, graphics).getWidth();
+        int x = gp.screenWidth / 2 - messageLength / 2;
+        return x;
     }
 }
