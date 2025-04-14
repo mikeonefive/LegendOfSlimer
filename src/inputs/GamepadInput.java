@@ -4,6 +4,8 @@ import com.studiohartman.jamepad.ControllerManager;
 import com.studiohartman.jamepad.ControllerState;
 import main.GamePanel;
 
+import static constants.Constants.*;
+
 
 public class GamepadInput {
     private final GamePanel gamePanel;
@@ -25,6 +27,7 @@ public class GamepadInput {
         ControllerState button = this.getButtonPressed();
         // System.out.println("Start button state: " + button.start);
 
+
         // handle directions
         if (button.dpadUp || button.leftStickY > 0.5)
             isGamepadUp = true;
@@ -40,16 +43,40 @@ public class GamepadInput {
         if (button.a)
             isApressed = true;
 
-        // pause & unpause game
-        if (button.start && gamePanel.gameState == gamePanel.playGame)
-            gamePanel.gameState = gamePanel.pauseGame;
-        else if (button.start && gamePanel.gameState == gamePanel.pauseGame)
-            gamePanel.gameState = gamePanel.playGame;
-
+        // PAUSE & UNPAUSE GAME
+        if (button.start && gamePanel.gameState == PLAY_GAME)
+            gamePanel.gameState = PAUSE_GAME;
+        else if (button.start && gamePanel.gameState == PAUSE_GAME)
+            gamePanel.gameState = PLAY_GAME;
 
         // DIALOGUE STATE
-        if (gamePanel.gameState == gamePanel.dialogueState && button.a) {
-            gamePanel.gameState = gamePanel.playGame;
+        if (gamePanel.gameState == DIALOGUE && button.a) {
+            gamePanel.gameState = PLAY_GAME;
+        }
+
+        // TITLE SCREEN STATE
+        if (gamePanel.gameState == TITLE_SCREEN) {
+            if (isGamepadUp) {
+                gamePanel.ui.commandNumber--;
+                if (gamePanel.ui.commandNumber < 0)
+                    gamePanel.ui.commandNumber = 2;
+            }
+            if (isGamepadDown) {
+                gamePanel.ui.commandNumber++;
+                if (gamePanel.ui.commandNumber > 2)
+                    gamePanel.ui.commandNumber = 0;
+            }
+
+            if (button.a && gamePanel.ui.commandNumber == 0) {
+                gamePanel.gameState = PLAY_GAME;
+                // gamePanel.playMusic(0);
+            }
+            if (button.a && gamePanel.ui.commandNumber == 1) {
+                // load game
+            }
+            if (button.a && gamePanel.ui.commandNumber == 2) {
+                System.exit(0);
+            }
         }
     }
 

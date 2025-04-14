@@ -14,7 +14,7 @@ public class ChestKey extends SuperObject {
         name = "ChestKey";
 
         try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/chestkey.png")));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/v0/chestkey.png")));
             utilityTool.scaleImage(image, gp.tileSize, gp.tileSize);
 
         } catch (IOException e) {

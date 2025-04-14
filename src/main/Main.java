@@ -9,7 +9,7 @@ public class Main {
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
-        window.setTitle("Bestest 2D adventure ever!: Legend of Slimer");
+        window.setTitle("Bestest 2D adventure ever!: The Legend of Slimer");
 
         GamePanel gamePanel = new GamePanel();
         window.add(gamePanel);

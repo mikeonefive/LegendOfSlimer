@@ -7,6 +7,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 // parent class for player and all other character classes
@@ -30,7 +32,7 @@ public abstract class Entity {
 
     public int directionLockCounter = 0;
 
-    String[] dialogueLines = new String[20];
+    List<String> dialogueLines = new ArrayList<>();
     int lineIndex = 0;
 
     public Entity(GamePanel gamePanel) {
@@ -41,10 +43,11 @@ public abstract class Entity {
     }
 
     public void speak() {
-        if (dialogueLines[lineIndex] == null)
+        if (lineIndex >= dialogueLines.size()) {
             lineIndex = 0;
+        }
 
-        gamePanel.ui.currentDialogueLine = dialogueLines[lineIndex];
+        gamePanel.ui.currentDialogueLine = dialogueLines.get(lineIndex);
         lineIndex++;
 
         // make NPC face player when talking

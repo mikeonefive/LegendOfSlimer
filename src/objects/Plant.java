@@ -14,7 +14,7 @@ public class Plant extends SuperObject {
         name = "Plant";
 
         try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/plant.png")));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/v0/plant.png")));
             utilityTool.scaleImage(image, gp.tileSize, gp.tileSize);
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());
