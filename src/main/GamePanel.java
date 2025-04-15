@@ -1,7 +1,7 @@
 package main;
 
-import entity.Entity;
-import entity.Player;
+import entities.Entity;
+import entities.Player;
 import inputs.GamepadInput;
 import inputs.KeyboardInput;
 import objects.AssetManager;
@@ -14,17 +14,17 @@ import java.awt.*;
 import static constants.Constants.*;
 
 // game panel = game screen
-public class GamePanel extends JPanel implements Runnable {  // GamePanel is now a subclass of JPanel inherits all the functions
+public class GamePanel extends JPanel implements Runnable { // GamePanel is now a subclass of JPanel inherits all the functions
     // SCREEN & TILE SETTINGS
-    final int originalTileSize = 25;                // 16 would be the original size for old pixel games
+    final int originalTileSize = 25;                        // 16 would be the original size for old pixel games
     final int scale = 2;
 
-    public final int tileSize = originalTileSize * scale;  // 50x50
-    public final int maxScreenColumn = 20;      // was 16!
+    public final int tileSize = originalTileSize * scale;   // 50x50
+    public final int maxScreenColumn = 20;                  // was 16!
     public final int maxScreenRow = 12;
 
-    public final int screenWidth = tileSize * maxScreenColumn;   // 768px
-    public final int screenHeight = tileSize * maxScreenRow;     // 576px
+    public final int screenWidth = tileSize * maxScreenColumn;   // 50 (tilesize) * 20 = 1000
+    public final int screenHeight = tileSize * maxScreenRow;     // 600
 
     // WORLD SETTINGS
     public final int maxWorldColumn = 50;

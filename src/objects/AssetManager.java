@@ -1,6 +1,6 @@
 package objects;
 
-import entity.Pink;
+import entities.Pink;
 import main.GamePanel;
 
 public class AssetManager {

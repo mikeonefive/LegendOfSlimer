@@ -1,4 +1,4 @@
-package entity;
+package entities;
 
 import constants.Constants;
 import inputs.GamepadInput;

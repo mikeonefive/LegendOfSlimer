@@ -1,13 +1,8 @@
-package entity;
+package entities;
 
 import main.GamePanel;
 
 import java.awt.*;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Random;
 
 public class Pink extends Entity {
@@ -44,14 +39,7 @@ public class Pink extends Entity {
 
 
     public void setDialogue() {
-        Path dialoguePath = Paths.get("assets/dialogue/pink.txt");
-        try {
-            String content = Files.readString(dialoguePath);
-            String[] blocks = content.split("\\r?\\n\\r?\\n"); // split by empty lines, returns an array -> convert to list
-            dialogueLines = Arrays.asList(blocks);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        super.setDialogue("pink.txt");
     }
 
 
