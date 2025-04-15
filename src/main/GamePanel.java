@@ -1,7 +1,7 @@
 package main;
 
-import entity.Entity;
-import entity.Player;
+import entities.Entity;
+import entities.Player;
 import inputs.GamepadInput;
 import inputs.KeyboardInput;
 import objects.AssetManager;
@@ -11,18 +11,20 @@ import tiles.TileManager;
 import javax.swing.*;
 import java.awt.*;
 
+import static constants.Constants.*;
+
 // game panel = game screen
-public class GamePanel extends JPanel implements Runnable {  // GamePanel is now a subclass of JPanel inherits all the functions
+public class GamePanel extends JPanel implements Runnable { // GamePanel is now a subclass of JPanel inherits all the functions
     // SCREEN & TILE SETTINGS
-    final int originalTileSize = 25;                // 16 would be the original size for old pixel games
+    final int originalTileSize = 25;                        // 16 would be the original size for old pixel games
     final int scale = 2;
 
-    public final int tileSize = originalTileSize * scale;  // 50x50
-    public final int maxScreenColumn = 16;
+    public final int tileSize = originalTileSize * scale;   // 50x50
+    public final int maxScreenColumn = 20;                  // was 16!
     public final int maxScreenRow = 12;
 
-    public final int screenWidth = tileSize * maxScreenColumn;   // 768px
-    public final int screenHeight = tileSize * maxScreenRow;     // 576px
+    public final int screenWidth = tileSize * maxScreenColumn;   // 50 (tilesize) * 20 = 1000
+    public final int screenHeight = tileSize * maxScreenRow;     // 600
 
     // WORLD SETTINGS
     public final int maxWorldColumn = 50;
@@ -59,9 +61,7 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
 
     //GAME STATES
     public int gameState;
-    public final int playGame = 1;
-    public final int pauseGame = 2;
-    public final int dialogueState = 3;
+
 
 
     public GamePanel() {
@@ -77,7 +77,7 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
         assetManager.setObjects();
         assetManager.setNpc();
         // playMusic(0); // 0 is the index of our background music (see Sound Class)
-        gameState = playGame;
+        gameState = TITLE_SCREEN;
     }
 
     public void startGameThread() {
@@ -117,7 +117,7 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
 
         gamepadInput.handleGamepadInput();
 
-        if (gameState == playGame)
+        if (gameState == PLAY_GAME)
             player.update();
 
         // NPCs
@@ -126,7 +126,7 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
                 entity.update();
         }
 
-        if (gameState == pauseGame) {
+        if (gameState == PAUSE_GAME) {
             // do the updates for paused game
         }
     }
@@ -141,28 +141,36 @@ public class GamePanel extends JPanel implements Runnable {  // GamePanel is now
             startTimeDrawing = System.nanoTime();
         }
 
-        //TILES
-        tileManager.draw(graphics);
+        // TITLE SCREEN
+        if (gameState == TITLE_SCREEN) {
+            ui.draw(graphics);
 
-        //OBJECTS check if any objects are in the array and draw them if not null
-        for (SuperObject object : objects) {
-            if (object != null) {
-                object.draw(graphics, this);
+        // OTHER GAME STATES (PLAY)
+        } else {
+
+            //TILES
+            tileManager.draw(graphics);
+
+            //OBJECTS check if any objects are in the array and draw them if not null
+            for (SuperObject object : objects) {
+                if (object != null) {
+                    object.draw(graphics, this);
+                }
             }
-        }
 
-        //NPCs
-        for (Entity entity : npcs) {
-            if (entity != null) {
-                entity.draw(graphics);
+            //NPCs
+            for (Entity entity : npcs) {
+                if (entity != null) {
+                    entity.draw(graphics);
+                }
             }
+
+            //PLAYER
+            player.draw(graphics);
+
+            //UI
+            ui.draw(graphics);
         }
-
-        //PLAYER
-        player.draw(graphics);
-
-        //UI
-        ui.draw(graphics);
 
         //DEBUG pt2
         if (KeyboardInput.checkDrawingTime) {

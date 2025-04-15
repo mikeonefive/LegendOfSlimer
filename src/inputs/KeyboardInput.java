@@ -4,6 +4,7 @@ import main.GamePanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import static constants.Constants.*;
 
 public class KeyboardInput implements KeyListener {
 
@@ -42,15 +43,43 @@ public class KeyboardInput implements KeyListener {
                 break;
         }
 
+        // TITLE SCREEN STATE
+        if (gamePanel.gameState == TITLE_SCREEN) {
+            switch(keyCode) {
+                case KeyEvent.VK_W:
+                    gamePanel.ui.commandNumber--;
+                    if (gamePanel.ui.commandNumber < 0)
+                        gamePanel.ui.commandNumber = 2;
+                    break;
+                case KeyEvent.VK_S:
+                    gamePanel.ui.commandNumber++;
+                    if (gamePanel.ui.commandNumber > 2)
+                        gamePanel.ui.commandNumber = 0;
+                    break;
+
+                case KeyEvent.VK_ENTER:
+                    if (gamePanel.ui.commandNumber == 0) {
+                        gamePanel.gameState = PLAY_GAME;
+                        // gamePanel.playMusic(0);
+                    }
+                    if (gamePanel.ui.commandNumber == 1) {
+                        // load game
+                    }
+                    if (gamePanel.ui.commandNumber == 2) {
+                        System.exit(0);
+                    }
+            }
+        }
+
         // PAUSE STATE
-        if (gamePanel.gameState == gamePanel.pauseGame && keyCode == KeyEvent.VK_ESCAPE)
-            gamePanel.gameState = gamePanel.playGame;
-        else if (gamePanel.gameState == gamePanel.playGame && keyCode == KeyEvent.VK_ESCAPE)
-            gamePanel.gameState = gamePanel.pauseGame;
+        if (gamePanel.gameState == PAUSE_GAME && keyCode == KeyEvent.VK_ESCAPE)
+            gamePanel.gameState = PLAY_GAME;
+        else if (gamePanel.gameState == PLAY_GAME && keyCode == KeyEvent.VK_ESCAPE)
+            gamePanel.gameState = PAUSE_GAME;
 
         // DIALOGUE STATE
-        if (gamePanel.gameState == gamePanel.dialogueState && keyCode == KeyEvent.VK_ENTER) {
-            gamePanel.gameState = gamePanel.playGame;
+        if (gamePanel.gameState == DIALOGUE && keyCode == KeyEvent.VK_ENTER) {
+            gamePanel.gameState = PLAY_GAME;
         }
     }
 

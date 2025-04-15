@@ -1,6 +1,6 @@
 package main;
 
-import entity.Entity;
+import entities.Entity;
 import constants.Constants;
 
 public class CollisionChecker {

@@ -14,7 +14,7 @@ public class Skull extends SuperObject {
         name = "Skull";
 
         try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/skull.png")));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/v0/skull.png")));
             utilityTool.scaleImage(image, gp.tileSize, gp.tileSize);
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());

@@ -15,7 +15,7 @@ public class Chest extends SuperObject {
         this.gp = gp;
         name = "Chest";
         try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/chest.png")));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/v0/chest.png")));
             utilityTool.scaleImage(image, gp.tileSize, gp.tileSize);
         } catch (IOException e) {
             System.err.println("An error occured: " + e.getMessage());

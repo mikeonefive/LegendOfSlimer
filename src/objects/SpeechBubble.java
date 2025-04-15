@@ -10,7 +10,7 @@ public class SpeechBubble extends SuperObject {
 
         name = "Speech Bubble";
         try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/speechbubble.png")));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/v0/speechbubble.png")));
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());
         }

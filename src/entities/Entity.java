@@ -1,4 +1,4 @@
-package entity;
+package entities;
 
 import main.GamePanel;
 import main.UtilityTool;
@@ -7,6 +7,12 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 // parent class for player and all other character classes
@@ -30,7 +36,7 @@ public abstract class Entity {
 
     public int directionLockCounter = 0;
 
-    String[] dialogueLines = new String[20];
+    List<String> dialogueLines = new ArrayList<>();
     int lineIndex = 0;
 
     public Entity(GamePanel gamePanel) {
@@ -40,11 +46,25 @@ public abstract class Entity {
     public void setDirection() {
     }
 
-    public void speak() {
-        if (dialogueLines[lineIndex] == null)
-            lineIndex = 0;
 
-        gamePanel.ui.currentDialogueLine = dialogueLines[lineIndex];
+    public void setDialogue(String filename) {
+        Path dialoguePath = Paths.get("assets/dialogue/" + filename);
+        try {
+            String content = Files.readString(dialoguePath);
+            String[] blocks = content.split("\\r?\\n\\r?\\n"); // split by empty lines, returns an array -> convert to list
+            dialogueLines = Arrays.asList(blocks);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void speak() {
+        if (lineIndex >= dialogueLines.size()) {
+            lineIndex = 0;
+        }
+
+        gamePanel.ui.currentDialogueLine = dialogueLines.get(lineIndex);
         lineIndex++;
 
         // make NPC face player when talking

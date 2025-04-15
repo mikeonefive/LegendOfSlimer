@@ -15,7 +15,7 @@ public class Key extends SuperObject {
         this.name = "Key";
 
         try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/key.png")));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/v0/key.png")));
             utilityTool.scaleImage(image, gp.tileSize, gp.tileSize);
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());

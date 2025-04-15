@@ -1,4 +1,4 @@
-package entity;
+package entities;
 
 import main.GamePanel;
 
@@ -20,29 +20,26 @@ public class Pink extends Entity {
     }
 
     public void getImage() {
-        up1 = setup("/npc/up1");         // setup method scales image for us & returns it
-        up2 = setup("/npc/up2");
-        up3 = setup("/npc/up3");
+        up1 = setup("/npc/pink/up1");         // setup method scales image for us & returns it
+        up2 = setup("/npc/pink/up2");
+        up3 = setup("/npc/pink/up3");
 
-        down1 = setup("/npc/down1");
-        down2 = setup("/npc/down2");
-        down3 = setup("/npc/down3");
+        down1 = setup("/npc/pink/down1");
+        down2 = setup("/npc/pink/down2");
+        down3 = setup("/npc/pink/down3");
 
-        left1 = setup("/npc/left1");
-        left2 = setup("/npc/left2");
-        left3 = setup("/npc/left3");
+        left1 = setup("/npc/pink/left1");
+        left2 = setup("/npc/pink/left2");
+        left3 = setup("/npc/pink/left3");
 
-        right1 = setup("/npc/right1");
-        right2 = setup("/npc/right2");
-        right3 = setup("/npc/right3");
+        right1 = setup("/npc/pink/right1");
+        right2 = setup("/npc/pink/right2");
+        right3 = setup("/npc/pink/right3");
     }
 
 
     public void setDialogue() {
-        dialogueLines[0] = "Hi dude!";
-        dialogueLines[1] = "Why are you here? You looking for the treasure?";
-        dialogueLines[2] = "I came to this island many years ago because I also \nwanted to find it but I gave up. It's nowhere \nto be found. I think it's just a rumor.";
-        dialogueLines[3] = "Anyways, good luck to you, dude.";
+        super.setDialogue("pink.txt");
     }
 
 

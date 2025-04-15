@@ -1,4 +1,4 @@
-package entity;
+package entities;
 
 import constants.Constants;
 import inputs.GamepadInput;
@@ -7,6 +7,8 @@ import inputs.KeyboardInput;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+
+import static constants.Constants.*;
 
 
 public class Player extends Entity {
@@ -141,7 +143,7 @@ public class Player extends Entity {
 
     public void interactWithNpc(int npcIndex) {
         if (npcIndex != Constants.EMPTY_AREA) {                 // if player collides with NPC
-            gamePanel.gameState = gamePanel.dialogueState;
+            gamePanel.gameState = DIALOGUE;
             gamePanel.npcs[npcIndex].speak();
         }
     }

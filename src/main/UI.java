@@ -1,11 +1,10 @@
 package main;
 
-import inputs.GamepadInput;
-
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DecimalFormat;
+
+import static constants.Constants.*;
 
 public class UI {
 
@@ -20,6 +19,7 @@ public class UI {
     public boolean gameOver = false;
 
     public String currentDialogueLine = "";
+    public int commandNumber = 0;
 
 
     public UI(GamePanel gp) {
@@ -28,7 +28,7 @@ public class UI {
         // arial40 = new Font("Arial", Font.BOLD, 40);
 
         try {
-            InputStream fontFile = getClass().getResourceAsStream("/fonts/MaruMonica.ttf");
+            InputStream fontFile = getClass().getResourceAsStream("/fonts/PressStart2P.ttf");
             pixelFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
         } catch (FontFormatException | IOException e) {
             throw new RuntimeException(e);
@@ -46,20 +46,72 @@ public class UI {
         // graphics.setFont(arial40);
         graphics.setColor(Color.WHITE);
 
+        // TITLE SCREEN STATE
+        if (gp.gameState == TITLE_SCREEN) {
+            drawTitleScreen();
+        }
+
         // PLAY GAME STATE
-        if (gp.gameState == gp.playGame) {
+        if (gp.gameState == PLAY_GAME) {
             // draw playGame graphics
         }
 
         // PAUSE GAME STATE
-        if (gp.gameState == gp.pauseGame) {
+        if (gp.gameState == PAUSE_GAME) {
             drawPauseScreen();
         }
 
         // DIALOGUE STATE
-        if (gp.gameState == gp.dialogueState) {
+        if (gp.gameState == DIALOGUE) {
             drawDialogueScreen();
         }
+    }
+
+    public void drawTitleScreen() {
+        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 45));
+        String text = "The Legend of Slimer";
+        int x = getXForCenteredText(text);
+        int y = gp.tileSize * 3;
+
+        // DROP SHADOW
+        graphics.setColor(Color.GREEN);
+        graphics.drawString(text, x + 3, y + 3);
+
+        // MAIN COLOR
+        graphics.setColor(Color.WHITE);
+        graphics.drawString(text, x, y);
+
+        // SLIMER IMAGE
+        x = gp.screenWidth / 2 - (int)(gp.tileSize * 1.5) / 2; // center
+        y += gp.tileSize * 2;
+        graphics.drawImage(gp.player.down2, x, y, (int)(gp.tileSize * 1.5), (int)(gp.tileSize * 1.5), null);
+
+        // MENU
+        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 30));
+        text = "New Game";
+        x = getXForCenteredText(text);
+        y += gp.tileSize * 4;
+        graphics.drawString(text, x, y);
+        if (commandNumber == 0) {
+            graphics.drawString(">", x - gp.tileSize, y);
+        }
+
+        text = "Load Game";
+        x = getXForCenteredText(text);
+        y += gp.tileSize;
+        graphics.drawString(text, x, y);
+        if (commandNumber == 1) {
+            graphics.drawString(">", x - gp.tileSize, y);
+        }
+
+        text = "Quit";
+        x = getXForCenteredText(text);
+        y += gp.tileSize;
+        graphics.drawString(text, x, y);
+        if (commandNumber == 2) {
+            graphics.drawString(">", x - gp.tileSize, y);
+        }
+
     }
 
 
@@ -73,7 +125,7 @@ public class UI {
         drawDialogueWindow(x, y, dialogueBoxWidth, dialogueBoxHeight);
 
         // DIALOGUE LINE
-        graphics.setFont(pixelFont.deriveFont(Font.BOLD, 25));
+        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 17));
         x += gp.tileSize;
         y += gp.tileSize;
 
