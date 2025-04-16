@@ -39,6 +39,10 @@ public abstract class Entity {
     List<String> dialogueLines = new ArrayList<>();
     int lineIndex = 0;
 
+    // CHARACTER STATUS
+    public int maxHealth;
+    public int health;
+
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }

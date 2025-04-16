@@ -1,6 +1,10 @@
 package main;
 
+import objects.PlayerHeart;
+import objects.SuperObject;
+
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -12,6 +16,7 @@ public class UI {
     Graphics2D graphics;
     Font arial20, arial40;
     Font pixelFont;
+    BufferedImage heartFull, heartHalf, heartBlank;
 
     public boolean showMessage = false;
     public String message = "";
@@ -34,6 +39,11 @@ public class UI {
             throw new RuntimeException(e);
         }
 
+        // CREATE HEART OBJECT
+        SuperObject heart = new PlayerHeart(gp);
+        heartFull = heart.image1;
+        heartHalf = heart.image2;
+        heartBlank = heart.image3;
     }
 
     public void setMessage(String text) {
@@ -53,17 +63,45 @@ public class UI {
 
         // PLAY GAME STATE
         if (gp.gameState == PLAY_GAME) {
-            // draw playGame graphics
+            drawPlayerHealth();
         }
 
         // PAUSE GAME STATE
         if (gp.gameState == PAUSE_GAME) {
             drawPauseScreen();
+            drawPlayerHealth();
         }
 
         // DIALOGUE STATE
         if (gp.gameState == DIALOGUE) {
+            drawPlayerHealth();
             drawDialogueScreen();
+        }
+    }
+
+    public void drawPlayerHealth() {
+        int x = gp.tileSize / 2;
+        int y = gp.tileSize / 2;
+        int i = 0;
+
+        // DRAW MAX HEALTH
+        while (i < gp.player.maxHealth / 2) {                // 2 lives = 1 heart
+            graphics.drawImage(heartBlank, x, y, 30, 30, null);
+            i++;
+            x += (int) (gp.tileSize / 1.5);
+        }
+
+        x = gp.tileSize / 2;
+        y = gp.tileSize / 2;
+        i = 0;
+        while (i < gp.player.health) {                // 2 lives = 1 heart
+            graphics.drawImage(heartHalf, x, y, 30, 30, null);
+            i++;
+            if (i < gp.player.health) {
+                graphics.drawImage(heartFull, x, y, 30, 30, null);
+            }
+            i++;
+            x += (int) (gp.tileSize / 1.5);
         }
     }
 
