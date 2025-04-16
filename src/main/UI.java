@@ -14,7 +14,6 @@ public class UI {
 
     GamePanel gp;
     Graphics2D graphics;
-    Font arial20, arial40;
     Font pixelFont;
     BufferedImage heartFull, heartHalf, heartBlank;
 
@@ -29,8 +28,6 @@ public class UI {
 
     public UI(GamePanel gp) {
         this.gp = gp;
-        // arial20 = new Font("Arial", Font.BOLD, 20);
-        // arial40 = new Font("Arial", Font.BOLD, 40);
 
         try {
             InputStream fontFile = getClass().getResourceAsStream("/fonts/PressStart2P.ttf");
@@ -149,7 +146,6 @@ public class UI {
         if (commandNumber == 2) {
             graphics.drawString(">", x - gp.tileSize, y);
         }
-
     }
 
 
@@ -192,6 +188,8 @@ public class UI {
         int shadowOffset = 3;
 
         String message = "PAUSED";
+
+        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 30));
 
         int x = getXForCenteredText(message);
         int y = gp.screenHeight / 2;

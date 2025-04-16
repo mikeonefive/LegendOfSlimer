@@ -8,7 +8,7 @@ import static constants.Constants.*;
 
 public class KeyboardInput implements KeyListener {
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, returnPressed;
     private final GamePanel gamePanel;
     //DEBUG
     public static boolean checkDrawingTime = false;
@@ -40,6 +40,9 @@ public class KeyboardInput implements KeyListener {
                 break;
             case KeyEvent.VK_D:
                 rightPressed = true;
+                break;
+            case KeyEvent.VK_ENTER:
+                returnPressed = true;
                 break;
         }
 
@@ -102,6 +105,9 @@ public class KeyboardInput implements KeyListener {
                 break;
             case KeyEvent.VK_D:
                 rightPressed = false;
+                break;
+            case KeyEvent.VK_ENTER:
+                returnPressed = false;
                 break;
 
             //DEBUG

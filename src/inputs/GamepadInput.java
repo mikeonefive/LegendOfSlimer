@@ -23,6 +23,7 @@ public class GamepadInput {
     public void handleGamepadInput() {
 
         resetDirectionBools();
+        resetPressedButtons();
 
         ControllerState button = this.getButtonPressed();
         // System.out.println("Start button state: " + button.start);
@@ -39,7 +40,7 @@ public class GamepadInput {
         if (button.dpadLeft || button.leftStickX < -0.5)
             isGamepadLeft = true;
 
-        // talking to NPC
+        // talking to NPC, getting health back from water
         if (button.a)
             isApressed = true;
 
@@ -86,6 +87,10 @@ public class GamepadInput {
         isGamepadRight = false;
         isGamepadUp = false;
         isGamepadDown = false;
+    }
+
+    private void resetPressedButtons() {
+        isApressed = false;
     }
 
     public ControllerState getButtonPressed() {

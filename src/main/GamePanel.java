@@ -35,11 +35,13 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
 
     //SYSTEM
     TileManager tileManager = new TileManager(this);
+    public EventHandler eventHandler = new EventHandler(this);
 
     //KEY HANDLER, create instance of our keyboardInput class
     public KeyboardInput keyboardInput = new KeyboardInput(this);
     public GamepadInput gamepadInput = new GamepadInput(this);
 
+    //SOUND
     Sound music = new Sound();
     Sound soundEffect = new Sound();
 
@@ -61,7 +63,6 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
 
     //GAME STATES
     public int gameState;
-
 
 
     public GamePanel() {
