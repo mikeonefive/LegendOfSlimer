@@ -14,8 +14,8 @@ public class Hasselhoff extends SuperObject {
         name = "Hasselhoff";
 
         try {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/v0/hasselhoff.png")));
-            utilityTool.scaleImage(image, gp.tileSize, gp.tileSize);
+            image1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/v0/hasselhoff.png")));
+            utilityTool.scaleImage(image1, gp.tileSize, gp.tileSize);
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());
         }

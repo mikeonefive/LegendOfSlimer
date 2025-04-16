@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 
 // parent class for all object classes
 public class SuperObject {
-    public BufferedImage image;
+    public BufferedImage image1, image2, image3;
     public String name;
     public boolean isColliding = false;
     public int worldX, worldY;
@@ -31,7 +31,7 @@ public class SuperObject {
                 worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
                 worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 
-            graphics.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            graphics.drawImage(image1, screenX, screenY, gp.tileSize, gp.tileSize, null);
         }
     }
 }

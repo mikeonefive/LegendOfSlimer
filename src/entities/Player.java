@@ -45,6 +45,10 @@ public class Player extends Entity {
         worldY = gamePanel.tileSize * 21;       // tilesize * 20 because the coordinates in our maps are all tiles (25px)
         speed = 4;                       // and so we can use the coordinates from our map
         direction = "rest";
+
+        // HEALTH
+        maxHealth = 6;                          // 6 means 3 hearts (1 life = 1/2 heart)
+        health = maxHealth;
     }
 
     public void getPlayerImage() {
