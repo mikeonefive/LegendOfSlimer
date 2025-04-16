@@ -103,6 +103,11 @@ public class Player extends Entity {
             int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npcs);
             interactWithNpc(npcIndex);
 
+            // CHECK EVENT
+            gamePanel.eventHandler.checkEvent();
+
+            // gamePanel.keyboardInput.returnPressed = false;
+
             // if isColliding is still false, the player can move in that direction
             if (!isColliding) {
                 switch (direction) {

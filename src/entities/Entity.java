@@ -216,8 +216,8 @@ public abstract class Entity {
 
             graphics.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
             // draw entity hitbox
-            graphics.setColor(Color.RED);
-            graphics.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+            // graphics.setColor(Color.RED);
+            // graphics.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
         }
     }
 }
