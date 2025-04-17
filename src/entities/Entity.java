@@ -24,13 +24,13 @@ public abstract class Entity {
     public int speed;
 
     public BufferedImage up1, up2, up3, down1, down2, down3, left1, left2, left3, right1, right2, right3;
-    public String direction;
+    public String direction = "down";
 
     public int spriteCounter = 0;
     public int spriteNumber = 1;
 
     // collision stuff, create invisible rectangle around player (but only for the core part of player)
-    public Rectangle solidArea;
+    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean isColliding = false;
 
@@ -38,6 +38,10 @@ public abstract class Entity {
 
     List<String> dialogueLines = new ArrayList<>();
     int lineIndex = 0;
+
+    public BufferedImage image1, image2, image3;
+    public String name;
+    // public boolean isColliding = false; this here came from SuperObject hopefully it doesn't clash with isColliding(line 35 collision stuff)
 
     // CHARACTER STATUS
     public int maxHealth;

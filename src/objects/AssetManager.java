@@ -11,7 +11,13 @@ public class AssetManager {
     }
 
     public void setObjects() {
+        gp.objects[0] = new Gate(gp);
+        gp.objects[0].worldX = 21 * gp.tileSize;
+        gp.objects[0].worldY = 22 * gp.tileSize;
 
+        gp.objects[1] = new Gate(gp);
+        gp.objects[1].worldX = 23 * gp.tileSize;
+        gp.objects[1].worldY = 25 * gp.tileSize;
     }
 
     public void setNpc() {

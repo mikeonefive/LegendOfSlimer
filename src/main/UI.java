@@ -1,7 +1,7 @@
 package main;
 
 import objects.PlayerHeart;
-import objects.SuperObject;
+import entities.Entity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -37,7 +37,7 @@ public class UI {
         }
 
         // CREATE HEART OBJECT
-        SuperObject heart = new PlayerHeart(gp);
+        Entity heart = new PlayerHeart(gp);
         heartFull = heart.image1;
         heartHalf = heart.image2;
         heartBlank = heart.image3;

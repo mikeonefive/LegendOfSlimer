@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 // parent class for all object classes
-public class SuperObject {
+public class Entity {
     public BufferedImage image1, image2, image3;
     public String name;
     public boolean isColliding = false;

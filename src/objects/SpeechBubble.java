@@ -1,18 +1,13 @@
 package objects;
 
-import javax.imageio.ImageIO;
-import java.io.IOException;
-import java.util.Objects;
+import entities.Entity;
+import main.GamePanel;
 
-public class SpeechBubble extends SuperObject {
+public class SpeechBubble extends Entity {
 
-    public SpeechBubble() {
-
+    public SpeechBubble(GamePanel gp) {
+        super(gp);
         name = "Speech Bubble";
-        try {
-            image1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/v0/speechbubble.png")));
-        } catch (IOException e) {
-            System.err.println("An error occurred: " + e.getMessage());
-        }
+        down1 = setup("/objects/v0/speechbubble");
     }
 }
