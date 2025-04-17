@@ -18,6 +18,8 @@ import java.util.Objects;
 // parent class for player and all other character classes
 public abstract class Entity {
 
+    public EntityType type;
+
     GamePanel gamePanel;
 
     public int worldX, worldY;
@@ -33,9 +35,12 @@ public abstract class Entity {
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean isColliding = false;
+    public boolean isInDamageCooldown = false;
+    public int damageCooldownTimer = 0;
 
     public int directionLockCounter = 0;
 
+    // DIALOGUE
     List<String> dialogueLines = new ArrayList<>();
     int lineIndex = 0;
 
@@ -99,7 +104,16 @@ public abstract class Entity {
         isColliding = false;
         gamePanel.collisionChecker.checkTile(this);
         gamePanel.collisionChecker.checkObject(this, false);
+        gamePanel.collisionChecker.checkEntity(this, gamePanel.npcs);
+        gamePanel.collisionChecker.checkEntity(this, gamePanel.enemies);
         boolean isCollidingWithPlayer = gamePanel.collisionChecker.checkPlayer(this);
+
+        if (this.type == EntityType.ENEMY && isCollidingWithPlayer) {
+            if (!gamePanel.player.isInDamageCooldown) {
+                gamePanel.player.health -= 1;
+                gamePanel.player.isInDamageCooldown = true;
+            }
+        }
 
         // if entity is not colliding with anything it can move
         if (!isColliding) {
@@ -219,9 +233,14 @@ public abstract class Entity {
             }
 
             graphics.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
-            // draw entity hitbox
-            // graphics.setColor(Color.RED);
-            // graphics.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+
+            //drawHitbox(graphics, screenX, screenY);
         }
+    }
+
+
+    public void drawHitbox(Graphics2D graphics, int screenX, int screenY) {
+        graphics.setColor(Color.RED);
+        graphics.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
     }
 }

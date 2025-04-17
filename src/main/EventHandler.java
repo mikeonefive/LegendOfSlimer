@@ -92,7 +92,7 @@ public class EventHandler {
     public void increaseHealthDrinkingWater(int col, int row, int gameState) {
         if (gp.keyboardInput.returnPressed || gp.gamepadInput.isApressed) {
             gp.gameState = gameState;
-            gp.ui.currentDialogueLine = "Wow!\nThat water is refreshing\nand I already feel so much better!";
+            gp.ui.currentDialogueLine = "Wow!\nThat water is refreshing and\nI already feel so much better!";
             if (gp.player.health != gp.player.maxHealth)
                 gp.player.health += 1;
         }

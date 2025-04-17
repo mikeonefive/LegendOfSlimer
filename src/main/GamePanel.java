@@ -21,7 +21,7 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
     final int scale = 2;
 
     public final int tileSize = originalTileSize * scale;   // 50x50
-    public final int maxScreenColumn = 20;                  // was 16!
+    public final int maxScreenColumn = 16;                  // was 16!
     public final int maxScreenRow = 12;
 
     public final int screenWidth = tileSize * maxScreenColumn;   // 50 (tilesize) * 20 = 1000
@@ -58,11 +58,12 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
     //PLAYER ENTITY & OBJECTS
     //create instance of player class so we can use gamepanel and keyboard input from player class
     public Player player = new Player(this, keyboardInput, gamepadInput);
+
     //objects array contains the different objects like keys, chests etc.
     public Entity[] objects = new Entity[15];
-    public Entity[] npcs = new entities.Entity[10];
+    public Entity[] npcs = new Entity[10];
+    public Entity[] enemies = new Entity[20];
     ArrayList<Entity> entityList = new ArrayList<>();
-
 
     //GAME STATES
     public int gameState;
@@ -80,6 +81,7 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
     public void setupGame() {
         assetManager.setObjects();
         assetManager.setNpc();
+        assetManager.setEnemies();
         // playMusic(0); // 0 is the index of our background music (see Sound Class)
         gameState = TITLE_SCREEN;
     }
@@ -125,9 +127,15 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
             player.update();
 
         // NPCs
-        for (entities.Entity entity : npcs) {
-            if (entity != null)
-                entity.update();
+        for (entities.Entity npc : npcs) {
+            if (npc != null)
+                npc.update();
+        }
+
+        // enemies
+        for (entities.Entity enemy : enemies) {
+            if (enemy != null)
+                enemy.update();
         }
 
         if (gameState == PAUSE_GAME) {
@@ -160,6 +168,12 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
             for (Entity npc : npcs) {
                 if (npc != null) {
                     entityList.add(npc);
+                }
+            }
+
+            for (Entity enemy : enemies) {
+                if (enemy != null) {
+                    entityList.add(enemy);
                 }
             }
 

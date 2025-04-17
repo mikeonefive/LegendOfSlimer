@@ -101,50 +101,28 @@ public class CollisionChecker {
                     // after we moved the entity where will it be in the next pos
                     case "up" :
                         entity.solidArea.y -= entity.speed;
-                        if (entity.solidArea.intersects(gp.objects[i].solidArea)) {
-                            // check if object is a solid object
-                            if (gp.objects[i].isColliding) {
-                                entity.isColliding = true;
-                            } // we need to check if the entity is the player because enemies can't pick up objects
-                            if (isEntityPlayer) {
-                                index = i; // and get which object we're colliding with
-                            }
-                        }
                         break;
                     case "down" :
                         entity.solidArea.y += entity.speed;
-                        if (entity.solidArea.intersects(gp.objects[i].solidArea)) {
-                            if (gp.objects[i].isColliding) {
-                                entity.isColliding = true;
-                            }
-                            if (isEntityPlayer) {
-                                index = i;
-                            }
-                        }
                         break;
                     case "left" :
                         entity.solidArea.x -= entity.speed;
-                        if (entity.solidArea.intersects(gp.objects[i].solidArea)) {
-                            if (gp.objects[i].isColliding) {
-                                entity.isColliding = true;
-                            }
-                            if (isEntityPlayer) {
-                                index = i;
-                            }
-                        }
                         break;
                     case "right" :
                         entity.solidArea.x += entity.speed;
-                        if (entity.solidArea.intersects(gp.objects[i].solidArea)) {
-                            if (gp.objects[i].isColliding) {
-                                entity.isColliding = true;
-                            }
-                            if (isEntityPlayer) {
-                                index = i;
-                            }
-                        }
                         break;
                 }
+
+                if (entity.solidArea.intersects(gp.objects[i].solidArea)) {
+                    // check if object is a solid object
+                    if (gp.objects[i].isColliding) {
+                        entity.isColliding = true;
+                    }                           // we need to check if the entity is the player because enemies can't pick up objects
+                    if (isEntityPlayer) {
+                        index = i;              // and get which object we're colliding with
+                    }
+                }
+
                 entity.solidArea.x = entity.solidAreaDefaultX;
                 entity.solidArea.y = entity.solidAreaDefaultY;
                 gp.objects[i].solidArea.x = gp.objects[i].solidAreaDefaultX;
@@ -172,36 +150,27 @@ public class CollisionChecker {
                     // after we moved the entity where will it be in the next pos
                     case "up" :
                         entity.solidArea.y -= entity.speed;
-                        if (entity.solidArea.intersects(targets[i].solidArea)) {
-                            // all monsters and NPCs are solid
-                            entity.isColliding = true;
-                            index = i;
-                        }
                         break;
 
                     case "down" :
                         entity.solidArea.y += entity.speed;
-                        if (entity.solidArea.intersects(targets[i].solidArea)) {
-                            entity.isColliding = true;
-                            index = i;
-                        }
                         break;
 
                     case "left" :
                         entity.solidArea.x -= entity.speed;
-                        if (entity.solidArea.intersects(targets[i].solidArea)) {
-                            entity.isColliding = true;
-                            index = i;
-                        }
                         break;
 
                     case "right" :
                         entity.solidArea.x += entity.speed;
-                        if (entity.solidArea.intersects(targets[i].solidArea)) {
-                            entity.isColliding = true;
-                            index = i;
-                        }
                         break;
+                }
+
+                if (entity.solidArea.intersects(targets[i].solidArea)) {
+                    // the entity can't be its own target, otherwise it wouldn't be able to move (colliding constantly)
+                    if (targets[i] != entity) {
+                        entity.isColliding = true;
+                        index = i;
+                    }
                 }
 
                 entity.solidArea.x = entity.solidAreaDefaultX;
@@ -214,6 +183,8 @@ public class CollisionChecker {
     }
 
     public boolean checkPlayer(Entity entity) {
+        boolean isCollidingWithPlayer = false;
+
         // get entity's solid area position
         entity.solidArea.x = entity.worldX + entity.solidArea.x;
         entity.solidArea.y = entity.worldY + entity.solidArea.y;
@@ -226,42 +197,31 @@ public class CollisionChecker {
             // after we moved the entity where will it be in the next pos
             case "up" :
                 entity.solidArea.y -= entity.speed;
-                if (entity.solidArea.intersects(gp.player.solidArea)) {
-                    // all monsters and NPCs are solid
-                    entity.isColliding = true;
-                    return true;
-                }
                 break;
 
             case "down" :
                 entity.solidArea.y += entity.speed;
-                if (entity.solidArea.intersects(gp.player.solidArea)) {
-                    entity.isColliding = true;
-                    return true;
-                }
                 break;
 
             case "left" :
                 entity.solidArea.x -= entity.speed;
-                if (entity.solidArea.intersects(gp.player.solidArea)) {
-                    entity.isColliding = true;
-                    return true;
-                }
                 break;
 
             case "right" :
                 entity.solidArea.x += entity.speed;
-                if (entity.solidArea.intersects(gp.player.solidArea)) {
-                    entity.isColliding = true;
-                    return true;
-                }
                 break;
+        }
+
+        if (entity.solidArea.intersects(gp.player.solidArea)) {
+            // all monsters and NPCs are solid
+            entity.isColliding = true;
+            isCollidingWithPlayer = true;
         }
 
         entity.solidArea.x = entity.solidAreaDefaultX;
         entity.solidArea.y = entity.solidAreaDefaultY;
         gp.player.solidArea.x = gp.player.solidAreaDefaultX;
         gp.player.solidArea.y = gp.player.solidAreaDefaultY;
-        return false;
+        return isCollidingWithPlayer;
     }
 }
