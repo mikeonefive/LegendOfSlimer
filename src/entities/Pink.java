@@ -13,7 +13,6 @@ public class Pink extends Entity {
 
         direction = "down";
         speed = 1;
-        solidArea = new Rectangle(0, 0, 48, 48);
 
         getImage();
         setDialogue();

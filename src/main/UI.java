@@ -1,7 +1,7 @@
 package main;
 
 import objects.PlayerHeart;
-import objects.SuperObject;
+import entities.Entity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -37,7 +37,7 @@ public class UI {
         }
 
         // CREATE HEART OBJECT
-        SuperObject heart = new PlayerHeart(gp);
+        Entity heart = new PlayerHeart(gp);
         heartFull = heart.image1;
         heartHalf = heart.image2;
         heartBlank = heart.image3;
@@ -103,7 +103,7 @@ public class UI {
     }
 
     public void drawTitleScreen() {
-        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 45));
+        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 38));
         String text = "The Legend of Slimer";
         int x = getXForCenteredText(text);
         int y = gp.tileSize * 3;
@@ -122,7 +122,7 @@ public class UI {
         graphics.drawImage(gp.player.down2, x, y, (int)(gp.tileSize * 1.5), (int)(gp.tileSize * 1.5), null);
 
         // MENU
-        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 30));
+        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 27));
         text = "New Game";
         x = getXForCenteredText(text);
         y += gp.tileSize * 4;
@@ -151,15 +151,15 @@ public class UI {
 
     public void drawDialogueScreen() {
         // WINDOW
-        int x = gp.tileSize * 2;
+        int x = (int)(gp.tileSize * 1.5);
         int y = gp.tileSize / 2;
-        int dialogueBoxWidth = gp.screenWidth - (gp.tileSize * 4);
+        int dialogueBoxWidth = gp.screenWidth - (gp.tileSize * 3);
         int dialogueBoxHeight = gp.tileSize * 4;
 
         drawDialogueWindow(x, y, dialogueBoxWidth, dialogueBoxHeight);
 
         // DIALOGUE LINE
-        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 17));
+        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 15));
         x += gp.tileSize;
         y += gp.tileSize;
 

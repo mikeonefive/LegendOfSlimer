@@ -1,15 +1,16 @@
 package main;
 
-import entities.Entity;
 import entities.Player;
 import inputs.GamepadInput;
 import inputs.KeyboardInput;
 import objects.AssetManager;
-import objects.SuperObject;
+import entities.Entity;
 import tiles.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 import static constants.Constants.*;
 
@@ -20,7 +21,7 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
     final int scale = 2;
 
     public final int tileSize = originalTileSize * scale;   // 50x50
-    public final int maxScreenColumn = 20;                  // was 16!
+    public final int maxScreenColumn = 16;                  // was 16!
     public final int maxScreenRow = 12;
 
     public final int screenWidth = tileSize * maxScreenColumn;   // 50 (tilesize) * 20 = 1000
@@ -57,9 +58,12 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
     //PLAYER ENTITY & OBJECTS
     //create instance of player class so we can use gamepanel and keyboard input from player class
     public Player player = new Player(this, keyboardInput, gamepadInput);
+
     //objects array contains the different objects like keys, chests etc.
-    public SuperObject[] objects = new SuperObject[15];
+    public Entity[] objects = new Entity[15];
     public Entity[] npcs = new Entity[10];
+    public Entity[] enemies = new Entity[20];
+    ArrayList<Entity> entityList = new ArrayList<>();
 
     //GAME STATES
     public int gameState;
@@ -77,6 +81,7 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
     public void setupGame() {
         assetManager.setObjects();
         assetManager.setNpc();
+        assetManager.setEnemies();
         // playMusic(0); // 0 is the index of our background music (see Sound Class)
         gameState = TITLE_SCREEN;
     }
@@ -122,9 +127,15 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
             player.update();
 
         // NPCs
-        for (Entity entity : npcs) {
-            if (entity != null)
-                entity.update();
+        for (entities.Entity npc : npcs) {
+            if (npc != null)
+                npc.update();
+        }
+
+        // enemies
+        for (entities.Entity enemy : enemies) {
+            if (enemy != null)
+                enemy.update();
         }
 
         if (gameState == PAUSE_GAME) {
@@ -148,28 +159,50 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
 
         // OTHER GAME STATES (PLAY)
         } else {
-
             //TILES
             tileManager.draw(graphics);
 
-            //OBJECTS check if any objects are in the array and draw them if not null
-            for (SuperObject object : objects) {
+            // ADD ALL OBJECTS AND ENTITIES TO 1 LIST
+            entityList.add(player);
+
+            for (Entity npc : npcs) {
+                if (npc != null) {
+                    entityList.add(npc);
+                }
+            }
+
+            for (Entity enemy : enemies) {
+                if (enemy != null) {
+                    entityList.add(enemy);
+                }
+            }
+
+            for (Entity object : objects) {
                 if (object != null) {
-                    object.draw(graphics, this);
+                    entityList.add(object);
                 }
             }
 
-            //NPCs
-            for (Entity entity : npcs) {
-                if (entity != null) {
-                    entity.draw(graphics);
+            // SORT LIST so we know what has to be drawn on top of each other
+            entityList.sort(new Comparator<Entity>() {
+                @Override
+                public int compare(Entity entity1, Entity entity2) {
+                    int result = Integer.compare(entity1.worldY, entity2.worldY);
+                    return result;
                 }
+            });
+
+            //DRAW ENTITIES
+            for (Entity entity : entityList) {
+                entity.draw(graphics);
             }
 
-            //PLAYER
-            player.draw(graphics);
+            //CLEAR ENTITY LIST
+            for (int i = 0; i < entityList.size(); i++) {
+                entityList.remove(i);
+            }
 
-            //UI
+            //DRAW UI
             ui.draw(graphics);
         }
 

@@ -103,6 +103,10 @@ public class Player extends Entity {
             int npcIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.npcs);
             interactWithNpc(npcIndex);
 
+            // CHECK COLLISION WITH ENEMIES
+            int enemyIndex = gamePanel.collisionChecker.checkEntity(this, gamePanel.enemies);
+            applyDamageFromEnemy(enemyIndex);
+
             // CHECK EVENT
             gamePanel.eventHandler.checkEvent();
 
@@ -146,6 +150,23 @@ public class Player extends Entity {
             if (restingCounter == 20) { // 20 frames time buffer for getting back to resting position
                 spriteNumber = 2;
                 restingCounter = 0;
+            }
+        }
+
+        if (isInDamageCooldown) {
+            damageCooldownTimer++;
+            if (damageCooldownTimer > 60) {
+                isInDamageCooldown = false;
+                damageCooldownTimer = 0;
+            }
+        }
+    }
+
+    private void applyDamageFromEnemy(int enemyIndex) {
+        if (enemyIndex != EMPTY_AREA) {
+            if (!isInDamageCooldown) {
+                health -= 1;
+                isInDamageCooldown = true;
             }
         }
     }
@@ -221,11 +242,21 @@ public class Player extends Entity {
                 break;
         }
 
+        if (isInDamageCooldown) {
+            // opacity/alpha channel so we see if we're in damage cooldown
+            graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+        }
         graphics.drawImage(image, screenX, screenY, null);
 
-        // draw player hitbox
-        graphics.setColor(Color.RED);
-        graphics.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+        // RESET ALPHA
+        graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
+        // DEBUG
+        // drawHitbox(graphics, screenX, screenY);
         // screenX & screenY don't change but the background changes
+
+        // graphics.setFont(new Font("Arial", Font.PLAIN, 25));
+        // graphics.setColor(Color.YELLOW);
+        // graphics.drawString("damage cooldown: " + damageCooldownTimer, 20, 400);
     }
 }
