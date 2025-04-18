@@ -24,18 +24,20 @@ public class Flamer extends Entity {
     }
 
     public void getImages() {
-        up1 = setup("/flamer/up1");
-        up2 = setup("/flamer/up2");
-        up3 = setup("/flamer/up3");
-        down1 = setup("/flamer/up3");
-        down2 = setup("/flamer/up1");
-        down3 = setup("/flamer/up2");
-        left1 = setup("/flamer/left1");
-        left2 = setup("/flamer/left2");
-        left3 = setup("/flamer/left3");
-        right1 = setup("/flamer/right1");
-        right2 = setup("/flamer/right2");
-        right3 = setup("/flamer/right3");
+
+        int customSize = (int)(gp.tileSize * 1.4);
+        up1 = setup("/flamer/up1", customSize, customSize);
+        up2 = setup("/flamer/up2", customSize, customSize);
+        up3 = setup("/flamer/up3", customSize,customSize);
+        down1 = setup("/flamer/up3", customSize,customSize);
+        down2 = setup("/flamer/up1", customSize,customSize);
+        down3 = setup("/flamer/up2", customSize,customSize);
+        left1 = setup("/flamer/left1", customSize,customSize);
+        left2 = setup("/flamer/left2", customSize,customSize);
+        left3 = setup("/flamer/left3", customSize,customSize);
+        right1 = setup("/flamer/right1", customSize,customSize);
+        right2 = setup("/flamer/right2", customSize,customSize);
+        right3 = setup("/flamer/right3", customSize,customSize);
     }
 
 

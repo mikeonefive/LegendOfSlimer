@@ -172,7 +172,7 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
             }
 
             for (Entity enemy : enemies) {
-                if (enemy != null) {
+                if (enemy != null && enemy.isAlive) {
                     entityList.add(enemy);
                 }
             }

@@ -2,12 +2,11 @@ package entities;
 
 import main.GamePanel;
 
-import java.awt.*;
 import java.util.Random;
 
-public class Pink extends Entity {
+public class Purple extends Entity {
 
-    public Pink(GamePanel gamePanel) {
+    public Purple(GamePanel gamePanel) {
 
         super(gamePanel);
 
@@ -19,21 +18,21 @@ public class Pink extends Entity {
     }
 
     public void getImage() {
-        up1 = setup("/npc/pink/up1");         // setup method scales image for us & returns it
-        up2 = setup("/npc/pink/up2");
-        up3 = setup("/npc/pink/up3");
+        up1 = setup("/npc/pink/up1", gp.tileSize, gp.tileSize);         // setup method scales image for us & returns it
+        up2 = setup("/npc/pink/up2", gp.tileSize, gp.tileSize);
+        up3 = setup("/npc/pink/up3", gp.tileSize, gp.tileSize);
 
-        down1 = setup("/npc/pink/down1");
-        down2 = setup("/npc/pink/down2");
-        down3 = setup("/npc/pink/down3");
+        down1 = setup("/npc/pink/down1", gp.tileSize, gp.tileSize);
+        down2 = setup("/npc/pink/down2", gp.tileSize, gp.tileSize);
+        down3 = setup("/npc/pink/down3", gp.tileSize, gp.tileSize);
 
-        left1 = setup("/npc/pink/left1");
-        left2 = setup("/npc/pink/left2");
-        left3 = setup("/npc/pink/left3");
+        left1 = setup("/npc/pink/left1", gp.tileSize, gp.tileSize);
+        left2 = setup("/npc/pink/left2", gp.tileSize, gp.tileSize);
+        left3 = setup("/npc/pink/left3", gp.tileSize, gp.tileSize);
 
-        right1 = setup("/npc/pink/right1");
-        right2 = setup("/npc/pink/right2");
-        right3 = setup("/npc/pink/right3");
+        right1 = setup("/npc/pink/right1", gp.tileSize, gp.tileSize);
+        right2 = setup("/npc/pink/right2", gp.tileSize, gp.tileSize);
+        right3 = setup("/npc/pink/right3", gp.tileSize, gp.tileSize);
     }
 
 

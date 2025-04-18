@@ -20,40 +20,42 @@ public abstract class Entity {
 
     public EntityType type;
 
-    GamePanel gamePanel;
-
-    public int worldX, worldY;
-    public int speed;
+    GamePanel gp;
 
     public BufferedImage up1, up2, up3, down1, down2, down3, left1, left2, left3, right1, right2, right3;
-    public String direction = "down";
+    public BufferedImage attackUp1, attackUp2, attackUp3, attackDown1, attackDown2, attackDown3,
+            attackLeft1, attackLeft2, attackLeft3, attackRight1, attackRight2, attackRight3;
 
+    // STATE
+    public int worldX, worldY;
+    public String direction = "down";
     public int spriteCounter = 0;
     public int spriteNumber = 1;
+    boolean isAttacking = false;
+    int attackSpriteCounter = 0;
 
-    // collision stuff, create invisible rectangle around player (but only for the core part of player)
+    // COLLISION stuff, create invisible rectangle around player (but only for the core part of player)
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
+    public Rectangle attackArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean isColliding = false;
     public boolean isInDamageCooldown = false;
     public int damageCooldownTimer = 0;
-
     public int directionLockCounter = 0;
 
     // DIALOGUE
     List<String> dialogueLines = new ArrayList<>();
     int lineIndex = 0;
 
-    public BufferedImage image1, image2, image3;
+    // CHARACTER ATTRIBUTES
     public String name;
-    // public boolean isColliding = false; this here came from SuperObject hopefully it doesn't clash with isColliding(line 35 collision stuff)
-
-    // CHARACTER STATUS
+    public int speed;
     public int maxHealth;
     public int health;
+    public boolean isAlive = true;
 
-    public Entity(GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
+    public Entity(GamePanel gp) {
+        this.gp = gp;
     }
 
     public void setDirection() {
@@ -77,11 +79,11 @@ public abstract class Entity {
             lineIndex = 0;
         }
 
-        gamePanel.ui.currentDialogueLine = dialogueLines.get(lineIndex);
+        gp.ui.currentDialogueLine = dialogueLines.get(lineIndex);
         lineIndex++;
 
         // make NPC face player when talking
-        switch(gamePanel.player.direction) {
+        switch(gp.player.direction) {
             case "up":
                 direction = "down";
                 break;
@@ -102,16 +104,16 @@ public abstract class Entity {
         setDirection();
 
         isColliding = false;
-        gamePanel.collisionChecker.checkTile(this);
-        gamePanel.collisionChecker.checkObject(this, false);
-        gamePanel.collisionChecker.checkEntity(this, gamePanel.npcs);
-        gamePanel.collisionChecker.checkEntity(this, gamePanel.enemies);
-        boolean isCollidingWithPlayer = gamePanel.collisionChecker.checkPlayer(this);
+        gp.collisionChecker.checkTile(this);
+        gp.collisionChecker.checkObject(this, false);
+        gp.collisionChecker.checkEntity(this, gp.npcs);
+        gp.collisionChecker.checkEntity(this, gp.enemies);
+        boolean isCollidingWithPlayer = gp.collisionChecker.checkPlayer(this);
 
         if (this.type == EntityType.ENEMY && isCollidingWithPlayer) {
-            if (!gamePanel.player.isInDamageCooldown) {
-                gamePanel.player.health -= 1;
-                gamePanel.player.isInDamageCooldown = true;
+            if (!gp.player.isInDamageCooldown) {
+                gp.player.health -= 1;
+                gp.player.isInDamageCooldown = true;
             }
         }
 
@@ -148,16 +150,25 @@ public abstract class Entity {
             spriteCounter = 0;
         }
 
+        if (isInDamageCooldown) {
+            damageCooldownTimer++;
+            if (damageCooldownTimer > 40) {
+                isInDamageCooldown = false;
+                damageCooldownTimer = 0;
+            }
+        }
+
     }
 
-    public BufferedImage setup(String imagePath) {
+    public BufferedImage setup(String imagePath, int width, int height) {
         UtilityTool utilityTool = new UtilityTool();
         BufferedImage image = null;
 
         try {
             image = ImageIO.read(Objects.requireNonNull
                     (getClass().getResourceAsStream(imagePath + ".png")));
-            image = utilityTool.scaleImage(image, gamePanel.tileSize, gamePanel.tileSize);
+
+            image = utilityTool.scaleImage(image, width, height);
 
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());
@@ -168,15 +179,17 @@ public abstract class Entity {
 
     public void draw (Graphics2D graphics) {
 
+        if (!isAlive) return;
+
         BufferedImage image = null;
 
-        int screenX = worldX - gamePanel.player.worldX + gamePanel.player.screenX;
-        int screenY = worldY - gamePanel.player.worldY + gamePanel.player.screenY;
+        int screenX = worldX - gp.player.worldX + gp.player.screenX;
+        int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-        if (worldX + gamePanel.tileSize > gamePanel.player.worldX - gamePanel.player.screenX &&  // make sure to only draw tiles around the player
-                worldX - gamePanel.tileSize < gamePanel.player.worldX + gamePanel.player.screenX &&  // +/- tilesize so we don't see the black bg
-                worldY + gamePanel.tileSize > gamePanel.player.worldY - gamePanel.player.screenY &&
-                worldY - gamePanel.tileSize < gamePanel.player.worldY + gamePanel.player.screenY) {
+        if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&  // make sure to only draw tiles around the player
+                worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&  // +/- tilesize so we don't see the black bg
+                worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
+                worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 
             switch (direction) {
                 case "rest":
@@ -232,7 +245,17 @@ public abstract class Entity {
                     break;
             }
 
-            graphics.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
+            if (isInDamageCooldown) {
+                // opacity/alpha channel so we see if we're in damage cooldown
+                graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+            }
+
+            graphics.drawImage(image, screenX, screenY, image.getWidth(), image.getHeight(), null);
+
+            // RESET ALPHA
+            graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
+
 
             //drawHitbox(graphics, screenX, screenY);
         }
@@ -242,5 +265,10 @@ public abstract class Entity {
     public void drawHitbox(Graphics2D graphics, int screenX, int screenY) {
         graphics.setColor(Color.RED);
         graphics.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+    }
+
+    public void drawAttackArea(Graphics2D graphics, int screenX, int screenY) {
+        graphics.setColor(Color.YELLOW);
+        graphics.drawRect(screenX + attackArea.x, screenY + attackArea.y, attackArea.width, attackArea.height);
     }
 }
