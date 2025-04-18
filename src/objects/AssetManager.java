@@ -1,7 +1,7 @@
 package objects;
 
 import entities.Flamer;
-import entities.Pink;
+import entities.Purple;
 import main.GamePanel;
 
 public class AssetManager {
@@ -22,7 +22,7 @@ public class AssetManager {
     }
 
     public void setNpc() {
-        gp.npcs[0] = new Pink(gp);
+        gp.npcs[0] = new Purple(gp);
         gp.npcs[0].worldX = gp.tileSize * 21;
         gp.npcs[0].worldY = gp.tileSize * 21;
     }

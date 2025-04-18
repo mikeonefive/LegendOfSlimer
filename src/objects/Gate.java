@@ -9,7 +9,7 @@ public class Gate extends Entity {
     public Gate(GamePanel gp) {
         super(gp);
         name = "Gate";
-        down1 = setup("/objects/v0/gate");
+        down1 = setup("/objects/v0/gate", gp.tileSize, gp.tileSize);
         isColliding = true;
 
         solidArea.x = 0;

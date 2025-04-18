@@ -27,27 +27,29 @@ public class KeyboardInput implements KeyListener {
     {
         int keyCode = e.getKeyCode();   // returns number of key that was pressed
 
-        // PLAY GAME STATE
-        switch(keyCode) {
-            case KeyEvent.VK_W:
-                upPressed = true;
-                break;
-            case KeyEvent.VK_S:
-                downPressed = true;
-                break;
-            case KeyEvent.VK_A:
-                leftPressed = true;
-                break;
-            case KeyEvent.VK_D:
-                rightPressed = true;
-                break;
-            case KeyEvent.VK_ENTER:
-                returnPressed = true;
-                break;
+        if (gamePanel.gameState == PLAY_GAME) {
+            // PLAY GAME STATE
+            switch (keyCode) {
+                case KeyEvent.VK_W:
+                    upPressed = true;
+                    break;
+                case KeyEvent.VK_S:
+                    downPressed = true;
+                    break;
+                case KeyEvent.VK_A:
+                    leftPressed = true;
+                    break;
+                case KeyEvent.VK_D:
+                    rightPressed = true;
+                    break;
+                case KeyEvent.VK_ENTER:
+                    returnPressed = true;
+                    break;
+            }
         }
 
         // TITLE SCREEN STATE
-        if (gamePanel.gameState == TITLE_SCREEN) {
+        else if (gamePanel.gameState == TITLE_SCREEN) {
             switch(keyCode) {
                 case KeyEvent.VK_W:
                     gamePanel.ui.commandNumber--;

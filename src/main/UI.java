@@ -36,8 +36,8 @@ public class UI {
             throw new RuntimeException(e);
         }
 
-        // CREATE HEART OBJECT
-        Entity heart = new PlayerHeart(gp);
+        // CREATE HEART OBJECT FOR PLAYER HEALTH
+        PlayerHeart heart = new PlayerHeart(gp);
         heartFull = heart.image1;
         heartHalf = heart.image2;
         heartBlank = heart.image3;
@@ -82,7 +82,7 @@ public class UI {
         int i = 0;
 
         // DRAW MAX HEALTH
-        while (i < gp.player.maxHealth / 2) {                // 2 lives = 1 heart
+        while (i < gp.player.maxHealth / 2) {                // 2 healthpoints = 1 heart, player max health = 6
             graphics.drawImage(heartBlank, x, y, 30, 30, null);
             i++;
             x += (int) (gp.tileSize / 1.5);
@@ -91,7 +91,7 @@ public class UI {
         x = gp.tileSize / 2;
         y = gp.tileSize / 2;
         i = 0;
-        while (i < gp.player.health) {                // 2 lives = 1 heart
+        while (i < gp.player.health) {
             graphics.drawImage(heartHalf, x, y, 30, 30, null);
             i++;
             if (i < gp.player.health) {
