@@ -9,7 +9,7 @@ public class Flamer extends Entity {
         super(gamePanel);
         name = "Flamer";
         speed = 3;
-        maxHealth = 4;
+        maxHealth = 10;
         health = maxHealth;
         type = EntityType.ENEMY;
 
@@ -41,6 +41,7 @@ public class Flamer extends Entity {
     }
 
 
+    @Override
     public void setDirection() {
         directionLockCounter++;
 
@@ -60,5 +61,14 @@ public class Flamer extends Entity {
 
             directionLockCounter = 0;
         }
+    }
+
+    @Override
+    public void reactToAttack() {
+
+        // if it receives damage, starts moving away from player
+        directionLockCounter = 0;
+        direction = gp.player.direction;
+
     }
 }

@@ -23,8 +23,8 @@ public abstract class Entity {
     GamePanel gp;
 
     public BufferedImage up1, up2, up3, down1, down2, down3, left1, left2, left3, right1, right2, right3;
-    public BufferedImage attackUp1, attackUp2, attackUp3, attackDown1, attackDown2, attackDown3,
-            attackLeft1, attackLeft2, attackLeft3, attackRight1, attackRight2, attackRight3;
+    public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2,
+            attackLeft1, attackLeft2, attackRight1, attackRight2;
 
     // STATE
     public int worldX, worldY;
@@ -33,6 +33,11 @@ public abstract class Entity {
     public int spriteNumber = 1;
     boolean isAttacking = false;
     int attackSpriteCounter = 0;
+    public boolean isAlive = true;
+    public boolean isDying = false;
+    int dyingCounter = 0;
+    boolean healthBarOn = false;
+    int healthBarCounter = 0;
 
     // COLLISION stuff, create invisible rectangle around player (but only for the core part of player)
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
@@ -52,14 +57,16 @@ public abstract class Entity {
     public int speed;
     public int maxHealth;
     public int health;
-    public boolean isAlive = true;
+
+
 
     public Entity(GamePanel gp) {
         this.gp = gp;
     }
 
-    public void setDirection() {
-    }
+    public void setDirection() {}
+
+    public void reactToAttack() {}
 
 
     public void setDialogue(String filename) {
@@ -110,8 +117,10 @@ public abstract class Entity {
         gp.collisionChecker.checkEntity(this, gp.enemies);
         boolean isCollidingWithPlayer = gp.collisionChecker.checkPlayer(this);
 
+        // deal damage to player
         if (this.type == EntityType.ENEMY && isCollidingWithPlayer) {
             if (!gp.player.isInDamageCooldown) {
+                gp.playSoundEffect(7);
                 gp.player.health -= 1;
                 gp.player.isInDamageCooldown = true;
             }
@@ -179,7 +188,8 @@ public abstract class Entity {
 
     public void draw (Graphics2D graphics) {
 
-        if (!isAlive) return;
+         if (!isAlive && !isDying)
+             return;
 
         BufferedImage image = null;
 
@@ -245,20 +255,75 @@ public abstract class Entity {
                     break;
             }
 
+            // draw entity health bar if ON
+            if (type == EntityType.ENEMY && healthBarOn) {
+                drawEntityHealthBar(graphics, screenX, screenY);
+                healthBarCounter++;
+
+                if (healthBarCounter > 300) {       // 5 secs
+                    healthBarCounter = 0;
+                    healthBarOn = false;
+                }
+            }
+
             if (isInDamageCooldown) {
+                healthBarOn = true;
+                healthBarCounter = 0;
                 // opacity/alpha channel so we see if we're in damage cooldown
-                graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+                changeOpacity(graphics, 0.4f);
+            }
+
+            if (isDying) {
+                startDyingAnimation(graphics);
             }
 
             graphics.drawImage(image, screenX, screenY, image.getWidth(), image.getHeight(), null);
 
             // RESET ALPHA
-            graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-
-
+            changeOpacity(graphics, 1);
 
             //drawHitbox(graphics, screenX, screenY);
         }
+    }
+
+
+    private void changeOpacity(Graphics2D g, float value) {
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, value));
+    }
+
+
+    private void drawEntityHealthBar(Graphics2D graphics, int screenX, int screenY) {
+            double oneHealthPoint = (double) gp.tileSize / maxHealth;      // divide bar's length by maxHealth of entity -> length of 1 HP
+            int healthbarValue = (int)(oneHealthPoint * health);
+
+            graphics.setColor(Color.BLACK);
+            graphics.fillRect(screenX - 1, screenY - 16, gp.tileSize + 2, 12);
+            graphics.setColor(Color.RED);
+            graphics.fillRect(screenX, screenY - 15, healthbarValue, 10);
+
+
+    }
+
+    public void startDyingAnimation(Graphics2D graphics) {
+        dyingCounter++;
+        float alphaValue = 0;
+
+        if (dyingCounter <= 40) {
+            int phase = (dyingCounter / 5) % 2;         // current 5-frame block (e.g., 0–4 = 0, 5–9 = 1, etc.)
+
+            if (phase == 0)
+                alphaValue = 0;
+            else
+                alphaValue = 1;
+
+            changeOpacity(graphics, alphaValue);
+
+        } else {
+            isDying = false;
+            isAlive = false;
+        }
+
+        changeOpacity(graphics, alphaValue);
     }
 
 

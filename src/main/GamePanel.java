@@ -133,9 +133,23 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
         }
 
         // enemies
-        for (entities.Entity enemy : enemies) {
-            if (enemy != null)
-                enemy.update();
+        for (int i = 0; i < enemies.length; i++) {
+            Entity enemy = enemies[i];
+
+            if (enemy != null) {
+                if (enemy.isAlive && !enemy.isDying) {
+                    enemy.update();
+                }
+
+                if (!enemy.isAlive) {
+                    enemies[i] = null; // Remove only after dying animation finishes
+                }
+            }
+
+
+
+
+
         }
 
         if (gameState == PAUSE_GAME) {
@@ -172,7 +186,7 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
             }
 
             for (Entity enemy : enemies) {
-                if (enemy != null && enemy.isAlive) {
+                if (enemy != null) {
                     entityList.add(enemy);
                 }
             }
@@ -198,9 +212,7 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
             }
 
             //CLEAR ENTITY LIST
-            for (int i = 0; i < entityList.size(); i++) {
-                entityList.remove(i);
-            }
+            entityList.clear();
 
             //DRAW UI
             ui.draw(graphics);
