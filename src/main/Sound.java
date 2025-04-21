@@ -7,24 +7,26 @@ import java.net.URL;
 
 public class Sound {
     Clip clip;
-    URL[] soundURL = new URL[30];
+    URL[] soundURLs = new URL[30];
 
     public Sound() {
-        soundURL[0] = getClass().getResource("/sounds/music.wav");
-        soundURL[1] = getClass().getResource("/sounds/coin.wav");
-        soundURL[2] = getClass().getResource("/sounds/powerup.wav");
-        soundURL[3] = getClass().getResource("/sounds/open.wav");
-        soundURL[4] = getClass().getResource("/sounds/fanfare.wav");
-        soundURL[5] = getClass().getResource("/sounds/badsound.wav");
+        soundURLs[0] = getClass().getResource("/sounds/music.wav");
+        soundURLs[1] = getClass().getResource("/sounds/coin.wav");
+        soundURLs[2] = getClass().getResource("/sounds/powerup.wav");
+        soundURLs[3] = getClass().getResource("/sounds/open.wav");
+        soundURLs[4] = getClass().getResource("/sounds/fanfare.wav");
+        soundURLs[5] = getClass().getResource("/sounds/badsound.wav");
 
-        soundURL[6] = getClass().getResource("/sounds/hit.wav");
-        soundURL[7] = getClass().getResource("/sounds/receivedamage.wav");
+        soundURLs[6] = getClass().getResource("/sounds/hit.wav");
+        soundURLs[7] = getClass().getResource("/sounds/receivedamage.wav");
+        soundURLs[8] = getClass().getResource("/sounds/fall.wav");
+        soundURLs[9] = getClass().getResource("/sounds/restorehealth.wav");
     }
 
     public void setFile(int i) {
 
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundURL[i]);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundURLs[i]);
             clip = AudioSystem.getClip();
             clip.open(audioInputStream);
         } catch (Exception e) {

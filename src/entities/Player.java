@@ -4,6 +4,8 @@ import constants.Constants;
 import inputs.GamepadInput;
 import main.GamePanel;
 import inputs.KeyboardInput;
+import objects.Katana;
+import objects.ShieldWood;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,6 +23,8 @@ public class Player extends Entity {
 
     int restingCounter = 0;
 
+    public boolean preventAttackFromTriggering = false;
+
 
     public Player(GamePanel gp, KeyboardInput keyboardInput, GamepadInput gamepadInput) {
         super(gp);  // call constructor of superclass
@@ -35,10 +39,10 @@ public class Player extends Entity {
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
-        attackArea.x = - 6;
-        attackArea.y = - 6;
-        attackArea.width = 65;
-        attackArea.height = 65;
+        attackArea.x = 0;
+        attackArea.y = 0;
+        attackArea.width = gp.tileSize / 2;
+        attackArea.height = gp.tileSize / 2;            // TODO: some adjustments here? attacking up you have to get really close
 
         setDefaultValues();
         getPlayerImages();
@@ -51,10 +55,31 @@ public class Player extends Entity {
         speed = 4;                       // and so we can use the coordinates from our map
         direction = "rest";
 
-        // HEALTH
-        maxHealth = 6;                          // 6 means 3 hearts (1 life = 1/2 heart)
+        // PLAYER STATS
+        level = 1;
+        maxHealth = 6;                  // 6 means 3 hearts (1 life = 1/2 heart)
         health = maxHealth;
+        strength = 1;                   // more strength = more damage
+        dexterity = 1;                  // more dexterity = receives less damage
+        experience = 0;
+        nextLevelExperience = 5;
+        coins = 0;
+        currentWeapon = new Katana(gp);
+        currentShield = new ShieldWood(gp);
+        attack = getAttack();           // strength & weapon
+        defense = getDefense();         // dexterity & shield
     }
+
+
+    public int getAttack() {
+        return attack = strength * currentWeapon.attackValue;
+    }
+
+
+    public int getDefense() {
+        return defense = dexterity * currentShield.defenseValue;
+    }
+
 
     public void getPlayerImages() {
         up1 = setup("/player/walk/up1", gp.tileSize, gp.tileSize);         // setup method scales image for us & returns it
@@ -93,9 +118,11 @@ public class Player extends Entity {
         gamepadInput.handleGamepadInput();
 
         // Check if player is starting an attack (this must go outside the movement block)
-        if (!isAttacking && (keyboardInput.returnPressed || gamepadInput.isApressed)) {
+        if (!isAttacking && !preventAttackFromTriggering &&
+                (keyboardInput.returnPressed || gamepadInput.isApressed)) {
             isAttacking = true;
         }
+        preventAttackFromTriggering = false;
 
         // If currently attacking, run the attack and return early
         if (isAttacking) {
@@ -247,6 +274,7 @@ public class Player extends Entity {
 
     public void interactWithNpc(int npcIndex) {
         if (npcIndex != Constants.EMPTY_AREA) {                 // if player collides with NPC
+            preventAttackFromTriggering = true;
             gp.gameState = DIALOGUE;
             gp.npcs[npcIndex].speak();
         }

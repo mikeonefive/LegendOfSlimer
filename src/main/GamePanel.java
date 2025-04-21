@@ -145,11 +145,6 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
                     enemies[i] = null; // Remove only after dying animation finishes
                 }
             }
-
-
-
-
-
         }
 
         if (gameState == PAUSE_GAME) {
@@ -213,10 +208,10 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
 
             //CLEAR ENTITY LIST
             entityList.clear();
-
-            //DRAW UI
-            ui.draw(graphics);
         }
+
+        //DRAW UI
+        ui.draw(graphics);
 
         //DEBUG pt2
         if (KeyboardInput.checkDrawingTime) {

@@ -1,12 +1,12 @@
 package main;
 
 import objects.PlayerHeart;
-import entities.Entity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import static constants.Constants.*;
 
@@ -24,6 +24,11 @@ public class UI {
 
     public String currentDialogueLine = "";
     public int commandNumber = 0;
+
+    int titleFontSize = 38;
+    int menuFontSize = 27;
+    int pauseFontSize = 30;
+    int dialogueFontSize = 15;
 
 
     public UI(GamePanel gp) {
@@ -74,9 +79,75 @@ public class UI {
             drawPlayerHealth();
             drawDialogueScreen();
         }
+
+        // CHARACTER STATS
+        if (gp.gameState == SHOW_CHARACTER_STATS) {
+            drawCharacterStatsScreen();
+        }
     }
 
-    public void drawPlayerHealth() {
+    private void drawCharacterStatsScreen() {
+        // CREATE FRAME
+        final int frameX = 2 * gp.tileSize;
+        final int frameY = gp.tileSize;
+        final int frameWidth = 5 * gp.tileSize;
+        final int frameHeight = 7 * gp.tileSize;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        // SETTING FONT ATTRIBUTES
+        graphics.setColor(Color.BLACK);
+        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, dialogueFontSize));
+
+        int textX = frameX + gp.tileSize / 2;
+        int textY = frameY + gp.tileSize;
+        final int lineHeight = dialogueFontSize + 10;
+
+        // STATS
+        List<String> statNames = List.of(
+                "Level",
+                "Health",
+                "Strength",
+                "Dexterity",
+                "Attack",
+                "Defense",
+                "Experience",
+                "Next Level",
+                "Coins",
+                "Weapon",
+                "Shield");
+
+        for (int i = 0; i < statNames.size(); i++) {
+            graphics.drawString(statNames.get(i), textX, textY + i * lineHeight);
+        }
+        // VAlUES right-aligned
+        int tailX = (frameX + frameWidth) - 20;
+        List<String> values = List.of(
+                String.valueOf(gp.player.level),
+                String.valueOf(gp.player.health) + "/" + gp.player.maxHealth,
+                String.valueOf(gp.player.strength),
+                String.valueOf(gp.player.dexterity),
+                String.valueOf(gp.player.attack),
+                String.valueOf(gp.player.defense),
+                String.valueOf(gp.player.experience),
+                String.valueOf(gp.player.nextLevelExperience),
+                String.valueOf(gp.player.coins));
+
+        for (int i = 0; i < values.size(); i++) {
+            textX = getXforRightAlignedText(values.get(i), tailX);
+            graphics.drawString(values.get(i), textX, textY + i * lineHeight);
+        }
+
+        graphics.drawImage(gp.player.currentWeapon.down1, tailX - gp.tileSize, 320, 15, 64, null);
+        // graphics.drawImage(gp.player.currentShield.down1, tailX - gp.tileSize, 360, null);
+    }
+
+    private int getXforRightAlignedText(String text, int tailX) {
+        int length = (int)graphics.getFontMetrics().getStringBounds(text, graphics).getWidth();
+        int x = tailX - length;
+        return x;
+    }
+
+    private void drawPlayerHealth() {
         int x = gp.tileSize / 2;
         int y = gp.tileSize / 2;
         int i = 0;
@@ -102,8 +173,8 @@ public class UI {
         }
     }
 
-    public void drawTitleScreen() {
-        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 38));
+    private void drawTitleScreen() {
+        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, titleFontSize));
         String text = "The Legend of Slimer";
         int x = getXForCenteredText(text);
         int y = gp.tileSize * 3;
@@ -122,7 +193,7 @@ public class UI {
         graphics.drawImage(gp.player.down2, x, y, (int)(gp.tileSize * 1.5), (int)(gp.tileSize * 1.5), null);
 
         // MENU
-        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 27));
+        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, menuFontSize));
         text = "New Game";
         x = getXForCenteredText(text);
         y += gp.tileSize * 4;
@@ -149,17 +220,17 @@ public class UI {
     }
 
 
-    public void drawDialogueScreen() {
+    private void drawDialogueScreen() {
         // WINDOW
         int x = (int)(gp.tileSize * 1.5);
         int y = gp.tileSize / 2;
         int dialogueBoxWidth = gp.screenWidth - (gp.tileSize * 3);
         int dialogueBoxHeight = gp.tileSize * 4;
 
-        drawDialogueWindow(x, y, dialogueBoxWidth, dialogueBoxHeight);
+        drawSubWindow(x, y, dialogueBoxWidth, dialogueBoxHeight);
 
         // DIALOGUE LINE
-        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 15));
+        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, dialogueFontSize));
         x += gp.tileSize;
         y += gp.tileSize;
 
@@ -170,7 +241,7 @@ public class UI {
     }
 
 
-    public void drawDialogueWindow(int x, int y, int width, int height) {
+    private void drawSubWindow(int x, int y, int width, int height) {
         Color color = new Color(255, 255, 255, 200);
         graphics.setColor(color);
         graphics.fillRoundRect(x, y, width, height, 35, 35);
@@ -182,14 +253,14 @@ public class UI {
     }
 
 
-    public void drawPauseScreen() {
+    private void drawPauseScreen() {
         Color shadowColor = Color.BLACK;
         Color textColor = Color.WHITE;
         int shadowOffset = 3;
 
         String message = "PAUSED";
 
-        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, 30));
+        graphics.setFont(pixelFont.deriveFont(Font.PLAIN, pauseFontSize));
 
         int x = getXForCenteredText(message);
         int y = gp.screenHeight / 2;
@@ -201,7 +272,7 @@ public class UI {
     }
 
 
-    public int getXForCenteredText (String text) {
+    private int getXForCenteredText (String text) {
         int messageLength = (int)graphics.getFontMetrics().getStringBounds(text, graphics).getWidth();
         int x = gp.screenWidth / 2 - messageLength / 2;
         return x;

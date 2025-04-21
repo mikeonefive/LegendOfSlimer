@@ -57,7 +57,20 @@ public abstract class Entity {
     public int speed;
     public int maxHealth;
     public int health;
+    public int level;
+    public int strength;
+    public int dexterity;
+    public int attack;
+    public int defense;
+    public int experience;
+    public int nextLevelExperience;
+    public int coins;
+    public Entity currentWeapon;
+    public Entity currentShield;
 
+    // ITEM ATTRIBUTES
+    public int attackValue;
+    public int defenseValue;
 
 
     public Entity(GamePanel gp) {
@@ -300,8 +313,6 @@ public abstract class Entity {
             graphics.fillRect(screenX - 1, screenY - 16, gp.tileSize + 2, 12);
             graphics.setColor(Color.RED);
             graphics.fillRect(screenX, screenY - 15, healthbarValue, 10);
-
-
     }
 
     public void startDyingAnimation(Graphics2D graphics) {
@@ -333,7 +344,10 @@ public abstract class Entity {
     }
 
     public void drawAttackArea(Graphics2D graphics, int screenX, int screenY) {
+        // Update the screen coordinates of attack area
+        int attackScreenX = worldX - gp.player.worldX + gp.player.screenX;
+        int attackScreenY = worldY - gp.player.worldY + gp.player.screenY;
         graphics.setColor(Color.YELLOW);
-        graphics.drawRect(screenX + attackArea.x, screenY + attackArea.y, attackArea.width, attackArea.height);
+        graphics.drawRect(attackScreenX + attackArea.x, attackScreenY + attackArea.y, attackArea.width, attackArea.height);
     }
 }
