@@ -13,12 +13,12 @@ public class Main {
 
         GamePanel gamePanel = new GamePanel();
         window.add(gamePanel);
-        window.pack(); // to see the added JPanel/gamePanel
+        window.pack();                      // to see the added JPanel/gamePanel
 
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
-        gamePanel.setupGame(); // puts objects in place
+        gamePanel.setupGame();              // puts objects in place
         gamePanel.startGameThread();
     } 
 }

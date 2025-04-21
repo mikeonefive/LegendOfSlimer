@@ -101,7 +101,6 @@ public class Player extends Entity {
         if (isAttacking) {
             spriteCounter = 0;
             attack();
-            return; // Skip movement logic while attacking
         }
 
         if (keyboardInput.upPressed || keyboardInput.downPressed
@@ -137,9 +136,6 @@ public class Player extends Entity {
             // CHECK COLLISION WITH ENEMIES
             int enemyIndex = gp.collisionChecker.checkEntity(this, gp.enemies);
             applyDamageFromEnemy(enemyIndex);
-
-            // CHECK EVENT
-            gp.eventHandler.checkEvent();
 
             // gamePanel.keyboardInput.returnPressed = false;
 
@@ -191,6 +187,9 @@ public class Player extends Entity {
                 damageCooldownTimer = 0;
             }
         }
+
+        // CHECK EVENT
+        gp.eventHandler.checkEvent();
     }
 
     private void attack() {
@@ -256,6 +255,7 @@ public class Player extends Entity {
     private void applyDamageFromEnemy(int enemyIndex) {
         if (enemyIndex != EMPTY_AREA) {
             if (!isInDamageCooldown) {
+                gp.playSoundEffect(7);
                 health -= 1;
                 isInDamageCooldown = true;
             }
@@ -266,12 +266,14 @@ public class Player extends Entity {
     public void dealDamageToEnemy(int index) {
         if (index != EMPTY_AREA) {
             if (!gp.enemies[index].isInDamageCooldown) {
+                gp.playSoundEffect(6);
                 gp.enemies[index].health -= 1;
                 gp.enemies[index].isInDamageCooldown = true;
+                gp.enemies[index].reactToAttack();
 
                 if (gp.enemies[index].health <= 0) {
-                    gp.enemies[index].isAlive = false;
-                    gp.enemies[index] = null;
+                    gp.enemies[index].isDying = true;
+                    // gp.enemies[index].isAlive = false;
                 }
             }
         }
@@ -394,7 +396,7 @@ public class Player extends Entity {
         // DEBUG
         // drawHitbox(graphics, screenX, screenY);
         // screenX & screenY don't change but the background changes
-        drawAttackArea(graphics, screenX, screenY);
+        // drawAttackArea(graphics, screenX, screenY);
         // graphics.setFont(new Font("Arial", Font.PLAIN, 25));
         // graphics.setColor(Color.YELLOW);
         // graphics.drawString("damage cooldown: " + damageCooldownTimer, 20, 400);

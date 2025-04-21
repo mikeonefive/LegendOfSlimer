@@ -18,26 +18,26 @@ public class Purple extends Entity {
     }
 
     public void getImage() {
-        up1 = setup("/npc/pink/up1", gp.tileSize, gp.tileSize);         // setup method scales image for us & returns it
-        up2 = setup("/npc/pink/up2", gp.tileSize, gp.tileSize);
-        up3 = setup("/npc/pink/up3", gp.tileSize, gp.tileSize);
+        up1 = setup("/npc/purple/up1", gp.tileSize, gp.tileSize);         // setup method scales image for us & returns it
+        up2 = setup("/npc/purple/up2", gp.tileSize, gp.tileSize);
+        up3 = setup("/npc/purple/up3", gp.tileSize, gp.tileSize);
 
-        down1 = setup("/npc/pink/down1", gp.tileSize, gp.tileSize);
-        down2 = setup("/npc/pink/down2", gp.tileSize, gp.tileSize);
-        down3 = setup("/npc/pink/down3", gp.tileSize, gp.tileSize);
+        down1 = setup("/npc/purple/down1", gp.tileSize, gp.tileSize);
+        down2 = setup("/npc/purple/down2", gp.tileSize, gp.tileSize);
+        down3 = setup("/npc/purple/down3", gp.tileSize, gp.tileSize);
 
-        left1 = setup("/npc/pink/left1", gp.tileSize, gp.tileSize);
-        left2 = setup("/npc/pink/left2", gp.tileSize, gp.tileSize);
-        left3 = setup("/npc/pink/left3", gp.tileSize, gp.tileSize);
+        left1 = setup("/npc/purple/left1", gp.tileSize, gp.tileSize);
+        left2 = setup("/npc/purple/left2", gp.tileSize, gp.tileSize);
+        left3 = setup("/npc/purple/left3", gp.tileSize, gp.tileSize);
 
-        right1 = setup("/npc/pink/right1", gp.tileSize, gp.tileSize);
-        right2 = setup("/npc/pink/right2", gp.tileSize, gp.tileSize);
-        right3 = setup("/npc/pink/right3", gp.tileSize, gp.tileSize);
+        right1 = setup("/npc/purple/right1", gp.tileSize, gp.tileSize);
+        right2 = setup("/npc/purple/right2", gp.tileSize, gp.tileSize);
+        right3 = setup("/npc/purple/right3", gp.tileSize, gp.tileSize);
     }
 
 
     public void setDialogue() {
-        super.setDialogue("pink.txt");
+        super.setDialogue("purple.txt");
     }
 
 
