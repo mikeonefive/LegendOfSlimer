@@ -28,12 +28,31 @@ public class AssetManager {
     }
 
     public void setEnemies() {
-        gp.enemies[0] = new Flamer(gp);
-        gp.enemies[0].worldX = 23 * gp.tileSize;
-        gp.enemies[0].worldY = 36 * gp.tileSize;
+        int i = 0;
 
-        gp.enemies[1] = new Flamer(gp);
-        gp.enemies[1].worldX = 23 * gp.tileSize;
-        gp.enemies[1].worldY = 37 * gp.tileSize;
+        gp.enemies[i] = new Flamer(gp);
+        gp.enemies[i].worldX = 23 * gp.tileSize;
+        gp.enemies[i].worldY = 36 * gp.tileSize;
+        i++;
+
+        gp.enemies[i] = new Flamer(gp);
+        gp.enemies[i].worldX = 23 * gp.tileSize;
+        gp.enemies[i].worldY = 37 * gp.tileSize;
+        i++;
+
+        gp.enemies[i] = new Flamer(gp);
+        gp.enemies[i].worldX = 24 * gp.tileSize;
+        gp.enemies[i].worldY = 40 * gp.tileSize;
+        i++;
+
+        gp.enemies[i] = new Flamer(gp);
+        gp.enemies[i].worldX = 34 * gp.tileSize;
+        gp.enemies[i].worldY = 42 * gp.tileSize;
+        i++;
+
+        gp.enemies[i] = new Flamer(gp);
+        gp.enemies[i].worldX = 38 * gp.tileSize;
+        gp.enemies[i].worldY = 42 * gp.tileSize;
+        i++;
     }
 }

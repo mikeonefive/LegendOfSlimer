@@ -13,6 +13,7 @@ public class GamepadInput {
     private boolean isGamepadLeft, isGamepadRight, isGamepadUp, isGamepadDown;
     public boolean isApressed;
 
+
     public GamepadInput(GamePanel gamePanel) {
         controllers = new ControllerManager();
         controllers.initSDLGamepad();
@@ -21,15 +22,84 @@ public class GamepadInput {
 
 
     public void handleGamepadInput() {
-
         resetDirectionBools();
         resetPressedButtons();
 
         ControllerState button = this.getButtonPressed();
-        // System.out.println("Start button state: " + button.start);
+
+        // PLAY GAME STATE handle directions
+        handleDirectionInput(button);
+
+        // talking to NPC, getting health back from water
+        if (button.a)
+            isApressed = true;
+        // show player stats
+        if (button.rb)
+            gamePanel.gameState = SHOW_CHARACTER_STATS;
+
+        // PAUSE & UNPAUSE GAME
+        if (button.start && gamePanel.gameState == PLAY_GAME)
+            gamePanel.gameState = PAUSE_GAME;
+        else if (button.start && gamePanel.gameState == PAUSE_GAME)
+            gamePanel.gameState = PLAY_GAME;
+
+        // DIALOGUE STATE
+        if (gamePanel.gameState == DIALOGUE) {
+            handleDialogueStateInput(button);
+        }
+
+        // SHOW STATS
+        if (gamePanel.gameState == SHOW_CHARACTER_STATS) {
+            handleStatsStateInput(button);
+        }
+
+        // TITLE SCREEN STATE
+        if (gamePanel.gameState == TITLE_SCREEN) {
+            handleTitleScreenInput(button);
+        }
+    }
 
 
-        // handle directions
+    private void handleStatsStateInput(ControllerState button) {
+        if (button.rb) {
+            gamePanel.gameState = PLAY_GAME;
+        }
+    }
+
+
+    private void handleDialogueStateInput(ControllerState button) {
+        if (button.a) {
+            gamePanel.gameState = PLAY_GAME;
+        }
+    }
+
+
+    private void handleTitleScreenInput(ControllerState button) {
+        if (isGamepadUp) {
+            gamePanel.ui.commandNumber--;
+            if (gamePanel.ui.commandNumber < 0)
+                gamePanel.ui.commandNumber = 2;
+        }
+        if (isGamepadDown) {
+            gamePanel.ui.commandNumber++;
+            if (gamePanel.ui.commandNumber > 2)
+                gamePanel.ui.commandNumber = 0;
+        }
+
+        if (button.a && gamePanel.ui.commandNumber == 0) {
+            gamePanel.gameState = PLAY_GAME;
+            // gamePanel.playMusic(0);
+        }
+        if (button.a && gamePanel.ui.commandNumber == 1) {
+            // load game
+        }
+        if (button.a && gamePanel.ui.commandNumber == 2) {
+            System.exit(0);
+        }
+    }
+
+
+    private void handleDirectionInput(ControllerState button) {
         if (button.dpadUp || button.leftStickY > 0.5)
             isGamepadUp = true;
         if (button.dpadDown || button.leftStickY < -0.5)
@@ -39,47 +109,8 @@ public class GamepadInput {
             isGamepadRight = true;
         if (button.dpadLeft || button.leftStickX < -0.5)
             isGamepadLeft = true;
-
-        // talking to NPC, getting health back from water
-        if (button.a)
-            isApressed = true;
-
-        // PAUSE & UNPAUSE GAME
-        if (button.start && gamePanel.gameState == PLAY_GAME)
-            gamePanel.gameState = PAUSE_GAME;
-        else if (button.start && gamePanel.gameState == PAUSE_GAME)
-            gamePanel.gameState = PLAY_GAME;
-
-        // DIALOGUE STATE
-        if (gamePanel.gameState == DIALOGUE && button.a) {
-            gamePanel.gameState = PLAY_GAME;
-        }
-
-        // TITLE SCREEN STATE
-        if (gamePanel.gameState == TITLE_SCREEN) {
-            if (isGamepadUp) {
-                gamePanel.ui.commandNumber--;
-                if (gamePanel.ui.commandNumber < 0)
-                    gamePanel.ui.commandNumber = 2;
-            }
-            if (isGamepadDown) {
-                gamePanel.ui.commandNumber++;
-                if (gamePanel.ui.commandNumber > 2)
-                    gamePanel.ui.commandNumber = 0;
-            }
-
-            if (button.a && gamePanel.ui.commandNumber == 0) {
-                gamePanel.gameState = PLAY_GAME;
-                // gamePanel.playMusic(0);
-            }
-            if (button.a && gamePanel.ui.commandNumber == 1) {
-                // load game
-            }
-            if (button.a && gamePanel.ui.commandNumber == 2) {
-                System.exit(0);
-            }
-        }
     }
+
 
     private void resetDirectionBools() {
         // Reset gamepad direction booleans
@@ -89,13 +120,14 @@ public class GamepadInput {
         isGamepadDown = false;
     }
 
+
     private void resetPressedButtons() {
         isApressed = false;
     }
 
+
     public ControllerState getButtonPressed() {
-        ControllerState currentState = this.getControllers().getState(0);
-        return currentState;
+        return this.getControllers().getState(0);
     }
 
     public ControllerManager getControllers() {

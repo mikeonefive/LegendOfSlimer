@@ -3,6 +3,8 @@ package main;
 import entities.Player;
 import inputs.GamepadInput;
 import inputs.KeyboardInput;
+import main.sound.SoundEffect;
+import main.sound.SoundPlayer;
 import objects.AssetManager;
 import entities.Entity;
 import tiles.TileManager;
@@ -43,8 +45,8 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
     public GamepadInput gamepadInput = new GamepadInput(this);
 
     //SOUND
-    Sound music = new Sound();
-    Sound soundEffect = new Sound();
+    SoundPlayer music = new SoundPlayer();
+    SoundPlayer soundEffect = new SoundPlayer();
 
     //COLLISIONCHECKER instance that receives this gamepanel
     public CollisionChecker collisionChecker = new CollisionChecker(this);
@@ -145,11 +147,6 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
                     enemies[i] = null; // Remove only after dying animation finishes
                 }
             }
-
-
-
-
-
         }
 
         if (gameState == PAUSE_GAME) {
@@ -213,10 +210,10 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
 
             //CLEAR ENTITY LIST
             entityList.clear();
-
-            //DRAW UI
-            ui.draw(graphics);
         }
+
+        //DRAW UI
+        ui.draw(graphics);
 
         //DEBUG pt2
         if (KeyboardInput.checkDrawingTime) {
@@ -230,8 +227,8 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
         graphics.dispose();
     }
 
-    public void playMusic(int i) {
-        music.setFile(i);
+    public void playMusic(SoundEffect soundName) {
+        music.setFile(soundName);
         music.play();
         music.loop();
     }
@@ -242,8 +239,8 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
     }
 
 
-    public void playSoundEffect(int i) {
-        soundEffect.setFile(i);
+    public void playSoundEffect(SoundEffect soundName) {
+        soundEffect.setFile(soundName);
         soundEffect.play();
     }
 }

@@ -4,6 +4,9 @@ import constants.Constants;
 import inputs.GamepadInput;
 import main.GamePanel;
 import inputs.KeyboardInput;
+import main.sound.SoundEffect;
+import objects.Katana;
+import objects.ShieldWood;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,6 +24,8 @@ public class Player extends Entity {
 
     int restingCounter = 0;
 
+    public boolean preventAttackFromTriggering = false;
+
 
     public Player(GamePanel gp, KeyboardInput keyboardInput, GamepadInput gamepadInput) {
         super(gp);  // call constructor of superclass
@@ -35,10 +40,10 @@ public class Player extends Entity {
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
-        attackArea.x = - 6;
-        attackArea.y = - 6;
-        attackArea.width = 65;
-        attackArea.height = 65;
+        attackArea.x = 0;
+        attackArea.y = 0;
+        attackArea.width = gp.tileSize / 2;
+        attackArea.height = gp.tileSize / 2;            // TODO: some adjustments here? attacking up you have to get really close
 
         setDefaultValues();
         getPlayerImages();
@@ -51,10 +56,31 @@ public class Player extends Entity {
         speed = 4;                       // and so we can use the coordinates from our map
         direction = "rest";
 
-        // HEALTH
-        maxHealth = 6;                          // 6 means 3 hearts (1 life = 1/2 heart)
+        // PLAYER STATS
+        level = 1;
+        maxHealth = 6;                  // 6 means 3 hearts (1 life = 1/2 heart)
         health = maxHealth;
+        strength = 1;                   // more strength = more damage
+        dexterity = 1;                  // more dexterity = receives less damage
+        experience = 0;
+        nextLevelExperience = 5;
+        coins = 0;
+        currentWeapon = new Katana(gp);
+        currentShield = new ShieldWood(gp);
+        attack = getAttack();           // strength & weapon
+        defense = getDefense();         // dexterity & shield
     }
+
+
+    public int getAttack() {
+        return attack = strength * currentWeapon.attackValue;
+    }
+
+
+    public int getDefense() {
+        return defense = dexterity * currentShield.defenseValue;
+    }
+
 
     public void getPlayerImages() {
         up1 = setup("/player/walk/up1", gp.tileSize, gp.tileSize);         // setup method scales image for us & returns it
@@ -93,9 +119,11 @@ public class Player extends Entity {
         gamepadInput.handleGamepadInput();
 
         // Check if player is starting an attack (this must go outside the movement block)
-        if (!isAttacking && (keyboardInput.returnPressed || gamepadInput.isApressed)) {
+        if (!isAttacking && !preventAttackFromTriggering &&
+                (keyboardInput.returnPressed || gamepadInput.isApressed)) {
             isAttacking = true;
         }
+        preventAttackFromTriggering = false;
 
         // If currently attacking, run the attack and return early
         if (isAttacking) {
@@ -247,6 +275,7 @@ public class Player extends Entity {
 
     public void interactWithNpc(int npcIndex) {
         if (npcIndex != Constants.EMPTY_AREA) {                 // if player collides with NPC
+            preventAttackFromTriggering = true;
             gp.gameState = DIALOGUE;
             gp.npcs[npcIndex].speak();
         }
@@ -255,9 +284,15 @@ public class Player extends Entity {
     private void applyDamageFromEnemy(int enemyIndex) {
         if (enemyIndex != EMPTY_AREA) {
             if (!isInDamageCooldown) {
-                gp.playSoundEffect(7);
-                health -= 1;
-                isInDamageCooldown = true;
+                gp.playSoundEffect(SoundEffect.RECEIVE_DAMAGE);
+
+                int currentDamage = gp.enemies[enemyIndex].attack - this.defense;
+                if (currentDamage < 0) {
+                    currentDamage = 0;
+                }
+
+                this.health -= currentDamage;
+                this.isInDamageCooldown = true;
             }
         }
     }
@@ -266,16 +301,43 @@ public class Player extends Entity {
     public void dealDamageToEnemy(int index) {
         if (index != EMPTY_AREA) {
             if (!gp.enemies[index].isInDamageCooldown) {
-                gp.playSoundEffect(6);
-                gp.enemies[index].health -= 1;
+                gp.playSoundEffect(SoundEffect.HIT);
+
+                int currentDamage = this.attack - gp.enemies[index].defense;
+                if (currentDamage < 0) {
+                    currentDamage = 0;
+                }
+
+                gp.enemies[index].health -= currentDamage;
+                // gp.ui.addMessage(currentDamage + " damage!");
+
                 gp.enemies[index].isInDamageCooldown = true;
                 gp.enemies[index].reactToAttack();
 
                 if (gp.enemies[index].health <= 0) {
                     gp.enemies[index].isDying = true;
-                    // gp.enemies[index].isAlive = false;
+                    // gp.ui.addMessage(gp.enemies[index].name + " was killed!");
+
+                    this.experience += gp.enemies[index].experience;
+                    checkLevelUp();
                 }
             }
+        }
+    }
+
+    private void checkLevelUp() {
+        if (this.experience >= this.nextLevelExperience) {
+            this.level++;
+            this.nextLevelExperience = this.nextLevelExperience * 2;
+            this.maxHealth += 2;
+            this.strength++;
+            this.dexterity++;
+            this.attack = this.getAttack();
+            this.defense = this.getDefense();
+
+            this.gp.playSoundEffect(SoundEffect.POWERUP);
+            this.gp.gameState = DIALOGUE;
+            this.gp.ui.currentDialogueLine = "You are level " + this.level + " now!";
         }
     }
 

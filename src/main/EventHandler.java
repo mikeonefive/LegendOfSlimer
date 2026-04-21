@@ -1,5 +1,7 @@
 package main;
 
+import main.sound.SoundEffect;
+
 import static constants.Constants.DIALOGUE;
 
 public class EventHandler {
@@ -47,11 +49,11 @@ public class EventHandler {
 
         if (canTriggerEvent) {
             if (isCollidingWithEvent(27, 16, "right")) {
-                receiveDamageFromPit(27, 16, DIALOGUE);
+                receiveDamageFromPit(DIALOGUE);
             }
 
             if (isCollidingWithEvent(23, 12, "up")) {
-                increaseHealthDrinkingWater(23, 12, DIALOGUE);
+                increaseHealthDrinkingWater(DIALOGUE);
             }
         }
     }
@@ -81,20 +83,28 @@ public class EventHandler {
         return isColliding;
     }
 
-    public void receiveDamageFromPit(int col, int row, int gameState) {
+    public void receiveDamageFromPit(int gameState) {
         gp.gameState = gameState;
+        gp.playSoundEffect(SoundEffect.FALL);
         gp.ui.currentDialogueLine = "Aaaaaaahhhhh! I fell into that pit!";
         gp.player.health -= 1;
-        // eventRectangle[col][row].isEventOver = true;
+
         canTriggerEvent = false;
     }
 
-    public void increaseHealthDrinkingWater(int col, int row, int gameState) {
+    public void increaseHealthDrinkingWater(int gameState) {
         if (gp.keyboardInput.returnPressed || gp.gamepadInput.isApressed) {
             gp.gameState = gameState;
+            gp.playSoundEffect(SoundEffect.RESTORE_HEALTH);
+
+
             gp.ui.currentDialogueLine = "Wow!\nThat water is refreshing and\nI already feel so much better!";
             if (gp.player.health != gp.player.maxHealth)
                 gp.player.health += 1;
         }
+        gp.player.preventAttackFromTriggering = true;
+
+        // respawn enemies after drinking water
+        this.gp.assetManager.setEnemies();
     }
 }
