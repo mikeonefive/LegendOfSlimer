@@ -1,11 +1,10 @@
 package main;
 
+import inputs.KeyboardInput;
 import objects.PlayerHeart;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +36,7 @@ public class UI {
     public UI(GamePanel gp) {
         this.gp = gp;
 
-        try {
-            InputStream fontFile = getClass().getResourceAsStream("/fonts/PressStart2P.ttf");
-            pixelFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
-        } catch (FontFormatException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.pixelFont = UtilityTool.loadPixelFontFromFile();
 
         // CREATE HEART OBJECT FOR PLAYER HEALTH
         PlayerHeart heart = new PlayerHeart(gp);
@@ -305,5 +299,36 @@ public class UI {
         int messageLength = (int)graphics.getFontMetrics().getStringBounds(text, graphics).getWidth();
         int x = gp.screenWidth / 2 - messageLength / 2;
         return x;
+    }
+
+    public void drawDebug(Graphics2D g, double timePassed) {
+        if (!gp.keyboardInput.showDebugText) {
+            return;
+        }
+
+        g.setFont(pixelFont.deriveFont(Font.PLAIN, this.dialogueFontSize));
+        g.setColor(Color.WHITE);
+
+        g.drawString("drawing time: " + timePassed, 10, 520);
+    }
+
+    public void drawDebug(Graphics2D g) {
+
+        if (!KeyboardInput.showDebugText) return;
+
+        g.setFont(pixelFont.deriveFont(Font.PLAIN, this.dialogueFontSize));
+        g.setColor(Color.YELLOW);
+
+        int x = 10;
+        int y = 400;
+        int lineHeight = 30;
+
+        g.drawString("player worldX " + gp.player.worldX, x, y);
+        y += lineHeight;
+        g.drawString("player worldY " + gp.player.worldY, x, y);
+        y += lineHeight;
+        g.drawString("col " + (gp.player.worldX + gp.player.solidArea.x) / gp.tileSize, x, y);
+        y += lineHeight;
+        g.drawString("row " + (gp.player.worldY + gp.player.solidArea.y) / gp.tileSize, x, y);
     }
 }

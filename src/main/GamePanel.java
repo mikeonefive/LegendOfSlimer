@@ -160,7 +160,7 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
 
         //DEBUG pt1 how long it takes to draw stuff
         long startTimeDrawing = 0;
-        if (KeyboardInput.checkDrawingTime) {
+        if (KeyboardInput.showDebugText) {
             startTimeDrawing = System.nanoTime();
         }
 
@@ -213,16 +213,15 @@ public class GamePanel extends JPanel implements Runnable { // GamePanel is now 
         }
 
         //DRAW UI
-        ui.draw(graphics);
+        this.ui.draw(graphics);
 
         //DEBUG pt2
-        if (KeyboardInput.checkDrawingTime) {
+        if (KeyboardInput.showDebugText) {
+            this.ui.drawDebug(graphics);
             long endTimeDrawing = System.nanoTime();
             double timePassed = endTimeDrawing - startTimeDrawing;
             timePassed = timePassed / 1_000_000_000; // convert to seconds
-            System.out.println("Drawing time: " + timePassed);
-            graphics.setColor(Color.WHITE);
-            graphics.drawString("Drawing time: " + timePassed, 10, 400);
+            this.ui.drawDebug(graphics, timePassed);
         }
         graphics.dispose();
     }

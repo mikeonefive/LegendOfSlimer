@@ -12,7 +12,7 @@ public class KeyboardInput implements KeyListener {
     private final GamePanel gamePanel;
 
     //DEBUG
-    public static boolean checkDrawingTime = false;
+    public static boolean showDebugText = false;
 
     public KeyboardInput(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -142,11 +142,11 @@ public class KeyboardInput implements KeyListener {
 
             //DEBUG
             case KeyEvent.VK_T:
-                if (checkDrawingTime == false) {
-                    checkDrawingTime = true;
+                if (showDebugText == false) {
+                    showDebugText = true;
                 }
                 else {
-                    checkDrawingTime = false;
+                    showDebugText = false;
                 }
                 break;
         }
