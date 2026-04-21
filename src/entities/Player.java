@@ -4,6 +4,7 @@ import constants.Constants;
 import inputs.GamepadInput;
 import main.GamePanel;
 import inputs.KeyboardInput;
+import main.sound.SoundEffect;
 import objects.Katana;
 import objects.ShieldWood;
 
@@ -283,9 +284,15 @@ public class Player extends Entity {
     private void applyDamageFromEnemy(int enemyIndex) {
         if (enemyIndex != EMPTY_AREA) {
             if (!isInDamageCooldown) {
-                gp.playSoundEffect(7);
-                health -= 1;
-                isInDamageCooldown = true;
+                gp.playSoundEffect(SoundEffect.RECEIVE_DAMAGE);
+
+                int currentDamage = gp.enemies[enemyIndex].attack - this.defense;
+                if (currentDamage < 0) {
+                    currentDamage = 0;
+                }
+
+                this.health -= currentDamage;
+                this.isInDamageCooldown = true;
             }
         }
     }
@@ -294,16 +301,43 @@ public class Player extends Entity {
     public void dealDamageToEnemy(int index) {
         if (index != EMPTY_AREA) {
             if (!gp.enemies[index].isInDamageCooldown) {
-                gp.playSoundEffect(6);
-                gp.enemies[index].health -= 1;
+                gp.playSoundEffect(SoundEffect.HIT);
+
+                int currentDamage = this.attack - gp.enemies[index].defense;
+                if (currentDamage < 0) {
+                    currentDamage = 0;
+                }
+
+                gp.enemies[index].health -= currentDamage;
+                // gp.ui.addMessage(currentDamage + " damage!");
+
                 gp.enemies[index].isInDamageCooldown = true;
                 gp.enemies[index].reactToAttack();
 
                 if (gp.enemies[index].health <= 0) {
                     gp.enemies[index].isDying = true;
-                    // gp.enemies[index].isAlive = false;
+                    // gp.ui.addMessage(gp.enemies[index].name + " was killed!");
+
+                    this.experience += gp.enemies[index].experience;
+                    checkLevelUp();
                 }
             }
+        }
+    }
+
+    private void checkLevelUp() {
+        if (this.experience >= this.nextLevelExperience) {
+            this.level++;
+            this.nextLevelExperience = this.nextLevelExperience * 2;
+            this.maxHealth += 2;
+            this.strength++;
+            this.dexterity++;
+            this.attack = this.getAttack();
+            this.defense = this.getDefense();
+
+            this.gp.playSoundEffect(SoundEffect.POWERUP);
+            this.gp.gameState = DIALOGUE;
+            this.gp.ui.currentDialogueLine = "You are level " + this.level + " now!";
         }
     }
 

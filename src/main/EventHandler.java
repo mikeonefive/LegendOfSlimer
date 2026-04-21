@@ -1,5 +1,7 @@
 package main;
 
+import main.sound.SoundEffect;
+
 import static constants.Constants.DIALOGUE;
 
 public class EventHandler {
@@ -83,7 +85,7 @@ public class EventHandler {
 
     public void receiveDamageFromPit(int gameState) {
         gp.gameState = gameState;
-        gp.playSoundEffect(8);
+        gp.playSoundEffect(SoundEffect.FALL);
         gp.ui.currentDialogueLine = "Aaaaaaahhhhh! I fell into that pit!";
         gp.player.health -= 1;
 
@@ -93,7 +95,7 @@ public class EventHandler {
     public void increaseHealthDrinkingWater(int gameState) {
         if (gp.keyboardInput.returnPressed || gp.gamepadInput.isApressed) {
             gp.gameState = gameState;
-            gp.playSoundEffect(9);
+            gp.playSoundEffect(SoundEffect.RESTORE_HEALTH);
 
 
             gp.ui.currentDialogueLine = "Wow!\nThat water is refreshing and\nI already feel so much better!";
@@ -101,5 +103,8 @@ public class EventHandler {
                 gp.player.health += 1;
         }
         gp.player.preventAttackFromTriggering = true;
+
+        // respawn enemies after drinking water
+        this.gp.assetManager.setEnemies();
     }
 }

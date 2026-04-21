@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import static constants.Constants.*;
@@ -18,8 +19,10 @@ public class UI {
     BufferedImage heartFull, heartHalf, heartBlank;
 
     public boolean showMessage = false;
-    public String message = "";
-    int messageTimer = 0;
+//    public String message = "";
+//    int messageTimer = 0;
+    ArrayList<String> messages = new ArrayList<>();
+    ArrayList<Integer> messageTimer = new ArrayList<>();
     public boolean gameOver = false;
 
     public String currentDialogueLine = "";
@@ -48,9 +51,9 @@ public class UI {
         heartBlank = heart.image3;
     }
 
-    public void setMessage(String text) {
-        message = text;
-        showMessage = true;
+    public void addMessage(String text) {
+        messages.add(text);
+        messageTimer.add(0);
     }
 
     public void draw (Graphics2D graphics) {
@@ -66,6 +69,7 @@ public class UI {
         // PLAY GAME STATE
         if (gp.gameState == PLAY_GAME) {
             drawPlayerHealth();
+            this.drawMessages();
         }
 
         // PAUSE GAME STATE
@@ -137,8 +141,8 @@ public class UI {
             graphics.drawString(values.get(i), textX, textY + i * lineHeight);
         }
 
-        graphics.drawImage(gp.player.currentWeapon.down1, tailX - gp.tileSize, 320, 15, 64, null);
-        // graphics.drawImage(gp.player.currentShield.down1, tailX - gp.tileSize, 360, null);
+        graphics.drawImage(gp.player.currentWeapon.down1, tailX - 60, 310, 64, 15, null);
+        graphics.drawImage(gp.player.currentShield.down1, tailX - 20, 325, 24, 31, null);
     }
 
     private int getXforRightAlignedText(String text, int tailX) {
@@ -170,6 +174,31 @@ public class UI {
             }
             i++;
             x += (int) (gp.tileSize / 1.5);
+        }
+    }
+
+    private void drawMessages() {
+        int messageX = gp.tileSize;
+        int messageY = gp.tileSize * 4;
+        graphics.setFont(graphics.getFont().deriveFont(pixelFont.BOLD, 32));
+
+        for (int i = 0; i < messages.size(); i++) {
+            if (messages.get(i) != null) {
+
+                graphics.setColor(Color.black);
+                graphics.drawString(messages.get(i), messageX + 2, messageY + 2);
+                graphics.setColor(Color.white);
+                graphics.drawString(messages.get(i), messageX, messageY);
+
+                int counter = messageTimer.get(i) + 1;
+                messageTimer.set(i, counter);
+                messageY += 50;
+
+                if (messageTimer.get(i) > 180) {
+                    messages.remove(i);
+                    messageTimer.remove(i);
+                }
+            }
         }
     }
 

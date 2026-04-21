@@ -7,59 +7,62 @@ public class Flamer extends Entity {
 
     public Flamer(GamePanel gamePanel) {
         super(gamePanel);
-        name = "Flamer";
-        speed = 3;
-        maxHealth = 10;
-        health = maxHealth;
-        type = EntityType.ENEMY;
+        this.name = "Flamer";
+        this.speed = 3;
+        this.maxHealth = 10;
+        this.health = maxHealth;
+        this.type = EntityType.ENEMY;
+        this.attack = 2;
+        this.defense = 0;
+        this.experience = 2;
 
-        solidArea.x = 9;
-        solidArea.y = 5;
-        solidArea.width = 30;
-        solidArea.height = 40;
-        solidAreaDefaultX = solidArea.x;
-        solidAreaDefaultY = solidArea.y;
+        this.solidArea.x = 9;
+        this.solidArea.y = 5;
+        this.solidArea.width = 30;
+        this.solidArea.height = 40;
+        this.solidAreaDefaultX = solidArea.x;
+        this.solidAreaDefaultY = solidArea.y;
 
-        getImages();
+        this.getImages();
     }
 
     public void getImages() {
 
         int customSize = (int)(gp.tileSize * 1.4);
-        up1 = setup("/flamer/up1", customSize, customSize);
-        up2 = setup("/flamer/up2", customSize, customSize);
-        up3 = setup("/flamer/up3", customSize,customSize);
-        down1 = setup("/flamer/up3", customSize,customSize);
-        down2 = setup("/flamer/up1", customSize,customSize);
-        down3 = setup("/flamer/up2", customSize,customSize);
-        left1 = setup("/flamer/left1", customSize,customSize);
-        left2 = setup("/flamer/left2", customSize,customSize);
-        left3 = setup("/flamer/left3", customSize,customSize);
-        right1 = setup("/flamer/right1", customSize,customSize);
-        right2 = setup("/flamer/right2", customSize,customSize);
-        right3 = setup("/flamer/right3", customSize,customSize);
+        this.up1 = setup("/flamer/up1", customSize, customSize);
+        this.up2 = setup("/flamer/up2", customSize, customSize);
+        this.up3 = setup("/flamer/up3", customSize,customSize);
+        this.down1 = setup("/flamer/up3", customSize,customSize);
+        this.down2 = setup("/flamer/up1", customSize,customSize);
+        this.down3 = setup("/flamer/up2", customSize,customSize);
+        this.left1 = setup("/flamer/left1", customSize,customSize);
+        this.left2 = setup("/flamer/left2", customSize,customSize);
+        this.left3 = setup("/flamer/left3", customSize,customSize);
+        this.right1 = setup("/flamer/right1", customSize,customSize);
+        this.right2 = setup("/flamer/right2", customSize,customSize);
+        this.right3 = setup("/flamer/right3", customSize,customSize);
     }
 
 
     @Override
     public void setDirection() {
-        directionLockCounter++;
+        this.directionLockCounter++;
 
         // if a direction is picked it won't be changed in the next 180 frames (3 secs)
-        if (directionLockCounter == 180) {
+        if (this.directionLockCounter == 180) {
             Random random = new Random();
             int randomNumber = random.nextInt(1, 101);
 
             if (randomNumber <= 25)
-                direction = "up";
+                this.direction = "up";
             if (randomNumber > 25 && randomNumber <= 50)
-                direction = "down";
+                this.direction = "down";
             if (randomNumber > 50 && randomNumber <= 75)
-                direction = "left";
+                this.direction = "left";
             if (randomNumber > 75 && randomNumber <= 100)
-                direction = "right";
+                this.direction = "right";
 
-            directionLockCounter = 0;
+            this.directionLockCounter = 0;
         }
     }
 
@@ -67,8 +70,8 @@ public class Flamer extends Entity {
     public void reactToAttack() {
 
         // if it receives damage, starts moving away from player
-        directionLockCounter = 0;
-        direction = gp.player.direction;
+        this.directionLockCounter = 0;
+        this.direction = gp.player.direction;
 
     }
 }

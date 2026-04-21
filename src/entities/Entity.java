@@ -2,6 +2,7 @@ package entities;
 
 import main.GamePanel;
 import main.UtilityTool;
+import main.sound.SoundEffect;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -133,8 +134,13 @@ public abstract class Entity {
         // deal damage to player
         if (this.type == EntityType.ENEMY && isCollidingWithPlayer) {
             if (!gp.player.isInDamageCooldown) {
-                gp.playSoundEffect(7);
-                gp.player.health -= 1;
+                gp.playSoundEffect(SoundEffect.RECEIVE_DAMAGE);
+
+                int currentDamage = this.attack - gp.player.defense;
+                if (currentDamage < 0) {
+                    currentDamage = 0;
+                }
+                gp.player.health -= currentDamage;
                 gp.player.isInDamageCooldown = true;
             }
         }
@@ -306,13 +312,13 @@ public abstract class Entity {
 
 
     private void drawEntityHealthBar(Graphics2D graphics, int screenX, int screenY) {
-            double oneHealthPoint = (double) gp.tileSize / maxHealth;      // divide bar's length by maxHealth of entity -> length of 1 HP
-            int healthbarValue = (int)(oneHealthPoint * health);
+        double oneHealthPoint = (double) gp.tileSize / maxHealth;      // divide bar's length by maxHealth of entity -> length of 1 HP
+        int healthbarValue = (int)(oneHealthPoint * health);
 
-            graphics.setColor(Color.BLACK);
-            graphics.fillRect(screenX - 1, screenY - 16, gp.tileSize + 2, 12);
-            graphics.setColor(Color.RED);
-            graphics.fillRect(screenX, screenY - 15, healthbarValue, 10);
+        graphics.setColor(Color.BLACK);
+        graphics.fillRect(screenX - 1, screenY - 16, gp.tileSize + 2, 12);
+        graphics.setColor(Color.RED);
+        graphics.fillRect(screenX, screenY - 15, healthbarValue, 10);
     }
 
     public void startDyingAnimation(Graphics2D graphics) {
@@ -330,8 +336,8 @@ public abstract class Entity {
             changeOpacity(graphics, alphaValue);
 
         } else {
-            isDying = false;
-            isAlive = false;
+            this.isDying = false;
+            this.isAlive = false;
         }
 
         changeOpacity(graphics, alphaValue);
